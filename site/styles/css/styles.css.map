@@ -1,0 +1,1 @@
+{"version":3,"sourceRoot":"","sources":["../sass/partials/_generalStyles.scss","../sass/varsmixins/_variables.scss","../sass/partials/_game.scss"],"names":[],"mappings":"AAAA;EACI;EACA;;AAGJ;EACI;EACA;;AAGJ;EACI;EACA;;AAGJ;EACI;EACA;;;AAEJ;EACI;EACA,aCnBG;EDoBH,OCbK;;;ADeT;EACI,aCtBK;EDuBL,OCjBK;;;ACTT;EACI;EACA;;;AAEJ;EACI;EACA","file":"styles.css"}

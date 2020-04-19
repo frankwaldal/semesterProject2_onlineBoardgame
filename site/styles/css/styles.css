@@ -1,0 +1,39 @@
+@font-face {
+  font-family: "Berry Rotunda";
+  src: url(../../assets/fonts/Berry-Rotunda.ttf), url(../../assets/fonts/Berry-Rotunda.woff);
+}
+@font-face {
+  font-family: "Goudy Sans";
+  src: url(../../assets/fonts/Goudy-Sans-Regular.ttf), url(../../assets/fonts/Goudy-Sans-Regular.woff);
+}
+@font-face {
+  font-family: "Goudy Thirty";
+  src: url(../../assets/fonts/goudy-thirty.demibold.ttf), url(../../assets/fonts/goudy-thirty.demibold.ttf);
+}
+body, h1, h2, h3, h4, main, div, canvas {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: url(../../assets/imgs/texture.jpg) repeat;
+  font-family: "Goudy Sans";
+  color: #ffe467;
+}
+
+h1, h2, h3, h4 {
+  font-family: "Goudy Thirty";
+  color: #ffe467;
+}
+
+.canvasWrapper {
+  display: flex;
+  justify-content: center;
+}
+
+canvas {
+  margin: 10px;
+  box-shadow: 0 0 15px #c26b38;
+}
+
+/*# sourceMappingURL=styles.css.map */

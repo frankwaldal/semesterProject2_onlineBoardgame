@@ -1,0 +1,8 @@
+.canvasWrapper {
+    display: flex;
+    justify-content: center;
+}
+canvas {
+    margin: 10px;
+    box-shadow: 0 0 15px $lightBrown;
+}
