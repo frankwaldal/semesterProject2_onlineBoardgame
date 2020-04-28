@@ -26,3 +26,39 @@ h1, h2, h3, h4 {
     font-family: $thirty;
     color: $yellow;
 }
+main {
+    padding-bottom: 50px;
+}
+button {
+    margin: 10px;
+    height: 2em;
+    font-size: 1.2em;
+    background: $green;
+    font-family: $sans;
+    color: $yellow;
+    border: 2px solid $lightBrown;
+    cursor: pointer;
+    &:hover {
+        background: lighten($green, 10%);
+        color: $lightYellow;
+    }
+    &:active {
+        background: darken($green, 10%);
+    }
+}
+.centerText {
+    text-align: center;
+}
+.column {
+    flex-direction: column;
+    margin-top: 20px;
+    & h1 {
+        margin: 20px auto;
+        text-decoration: underline;
+    }
+}
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100vw;
+}

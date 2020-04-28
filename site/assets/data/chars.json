@@ -1,0 +1,61 @@
+[{
+    "name": "Anozor",
+    "class": "Human Mage",
+    "gender": "Male",
+    "weapon": "Staff",
+    "imgUrl": "assets/imgs/anozor.png"
+},{
+    "name": "Brieva Krore",
+    "class": "Dark Elf Warrior",
+    "gender": "Female",
+    "weapon": "Sword",
+    "imgUrl": "assets/imgs/brievaKrore.png"
+},{
+    "name": "Rhaemuss Idris",
+    "class": "Dark Elf Mage",
+    "gender": "Female",
+    "weapon": "Staff",
+    "imgUrl": "assets/imgs/rhaemussIdris.png"
+},{
+    "name": "Eyra",
+    "class": "Valkyrie Archer",
+    "gender": "Female",
+    "weapon": "Bow",
+    "imgUrl": "assets/imgs/eyra.png"
+},{
+    "name": "Edun Calazzo",
+    "class": "Human Warrior",
+    "gender": "Male",
+    "weapon": "Axe",
+    "imgUrl": "assets/imgs/edunCalazzo.png"
+},{
+    "name": "Oneus",
+    "class": "Human Mage",
+    "gender": "Male",
+    "weapon": "Staff",
+    "imgUrl": "assets/imgs/oneus.png"
+},{
+    "name": "Baptiste Ponti",
+    "class": "Human Warrior",
+    "gender": "Male",
+    "weapon": "Sword",
+    "imgUrl": "assets/imgs/baptistePonti.png"
+},{
+    "name": "Siva",
+    "class": "Valkyrie Archer",
+    "gender": "Female",
+    "weapon": "Bow",
+    "imgUrl": "assets/imgs/siva.png"
+},{
+    "name": "Eyja",
+    "class": "Valkyrie Archer",
+    "gender": "Female",
+    "weapon": "Bow",
+    "imgUrl": "assets/imgs/eyja.png"
+},{
+    "name": "Imgelramus Reski",
+    "class": "Human Warrior",
+    "gender": "Male",
+    "weapon": "Sword",
+    "imgUrl": "assets/imgs/imgelramusReski.png"
+}]

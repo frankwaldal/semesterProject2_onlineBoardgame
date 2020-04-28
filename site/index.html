@@ -2,12 +2,57 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Online Boardgame - Setup</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Climb to the Mist Mountain - Setup</title>
         <link rel="stylesheet" href="styles/css/styles.css">
     </head>
     <body>
-        <h1>Placeholder Heading</h1>
-        <p>Placeholder paragraph</p>
+        <header>
+            <img src="assets/svg/logo.svg" alt="Logo" class="logo">
+            <h1>Climb to the Mist Mountain - an online boardgame</h1>
+        </header>
+        <main>
+            <div class="playSelection">
+                <h2>Local Play</h2>
+                <p>Play against a friend at the same location, in the same browser.</p>
+                <button id="localPlay">Pick Characters</button>
+            </div>
+            <div class="playSelection">
+                <h2>Online Play</h2>
+                <p>Play online against other players, in seperate browsers.</p>
+                <button id="onlinePlay">Pick Characters</button>
+            </div>
+            <div class="fullWidth column">
+                <h1>About this game</h1>
+                <div class="collapseSegment">
+                    <div class="segment closed" id="goal">
+                        <h2 id="goalHeading">Goal of the game<img src="assets/svg/arrow.svg" alt="Expand Arrow" class="icon"></h2>
+                        <p class="centerText">The goal of the game is to reach the top of the Mist Mountain first.</p>
+                        <p class="centerText">On the way there you might meet scary monsters that you will have to fight to get to the top of the mountain.</p>
+                    </div>
+                    <div class="segment closed" id="rules">
+                        <h2 id="rulesHeading">Rules<img src="assets/svg/arrow.svg" alt="Expand Arrow" class="icon"></h2>
+                        <ul>
+                            <li>A dice throw decides who starts the game.</li>
+                            <li>Rolling a 6 gives you an extra turn.</li>
+                            <li>If you land on a battle tile, you get 6 dices, and you need to roll the required rolls to stay on the tile. If you loose your rolls, you will be sent back 2 tiles.</li>
+                            <li>The first to pass the goal tile wins.</li>
+                        </ul>
+                    </div>
+                    <div class="segment closed" id="assets">
+                        <h2 id="assetsHeading">Assets<img src="assets/svg/arrow.svg" alt="Expand Arrow" class="icon"></h2>
+                        <p class="centerText"><a href="https://www.goodfreephotos.com/other-landscapes/fog-and-mist-over-the-mountain-hiking-path.jpg.php" target="_blank">Background for the boardgame by Vittorio Staffolani.</a></p>
+                        <p class="centerText"><a href="https://pixabay.com/no/users/pendleburyannette-1860575/" target="_blank">Monsters and characters by pendleburyannette.</a></p>
+                        <p class="centerText">Other assets by Frank Waldal.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <p class="centerText">Created by Frank Waldal, 2020.</p>
+        </footer>
         <script src="scripts/lodash.min.js" charset="utf-8"></script>
+        <script src="scripts/about.js" charset="utf-8"></script>
+        <script src="scripts/setup.js" charset="utf-8"></script>
     </body>
 </html>

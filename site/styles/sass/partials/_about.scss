@@ -1,0 +1,37 @@
+.collapseSegment {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    & .segment {
+        max-width: 800px;
+        margin: 20px auto;
+        overflow: hidden;
+        transition: height .5s ease;
+        height: 34px;
+        & h2 {
+            font-family: $sans;
+            font-size: 24px;
+            cursor: pointer;
+            @include noSelect;
+        }
+        & a {
+            text-decoration: none;
+            color: $lightBrown;
+            &:hover {
+                color: $yellow;
+                text-decoration: underline;
+            }
+        }
+        & ul {
+            list-style: square;
+            & li {
+                margin: 10px;
+            }
+        }
+    }
+    & .icon {
+        margin: 0 5px;
+        width: 24px;
+        transition: transform .5s ease;
+    }
+}

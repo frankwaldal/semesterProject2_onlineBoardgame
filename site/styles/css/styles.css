@@ -26,14 +26,203 @@ h1, h2, h3, h4 {
   color: #ffe467;
 }
 
+main {
+  padding-bottom: 50px;
+}
+
+button {
+  margin: 10px;
+  height: 2em;
+  font-size: 1.2em;
+  background: #45911c;
+  font-family: "Goudy Sans";
+  color: #ffe467;
+  border: 2px solid #c26b38;
+  cursor: pointer;
+}
+button:hover {
+  background: #59bc24;
+  color: #fffdf2;
+}
+button:active {
+  background: #316614;
+}
+
+.centerText {
+  text-align: center;
+}
+
+.column {
+  flex-direction: column;
+  margin-top: 20px;
+}
+.column h1 {
+  margin: 20px auto;
+  text-decoration: underline;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+}
+
+header {
+  display: flex;
+  align-items: center;
+}
+header .logo {
+  height: 150px;
+  margin: 10px;
+}
+header h1 {
+  font-size: 40px;
+  margin: 10px;
+}
+
+main {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+main h2 {
+  font-size: 30px;
+  width: 100%;
+  text-align: center;
+}
+main #error {
+  color: #b82525;
+  font-size: 20px;
+}
+main .center {
+  margin: 10px auto;
+}
+main .fullWidth {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+main .playSelection {
+  margin-top: 50px;
+  margin-bottom: auto;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+main .playSelection img {
+  margin: 20px;
+  max-width: calc(50vw - 80px);
+}
+main .playSelection p {
+  text-align: center;
+  letter-spacing: 0.1em;
+}
+main label {
+  font-size: 20px;
+}
+main select {
+  margin: 10px;
+  margin-bottom: 20px;
+  height: 2.5em;
+  font-family: "Goudy Sans";
+  font-size: 20px;
+  background: #26150b;
+  color: #ffe467;
+  padding: 10px;
+}
+main input {
+  margin: 10px;
+  margin-bottom: 20px;
+  font-family: "Goudy Sans";
+  font-size: 20px;
+  background: #26150b;
+  color: #ffe467;
+  padding: 10px;
+}
+
+.collapseSegment {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.collapseSegment .segment {
+  max-width: 800px;
+  margin: 20px auto;
+  overflow: hidden;
+  transition: height 0.5s ease;
+  height: 34px;
+}
+.collapseSegment .segment h2 {
+  font-family: "Goudy Sans";
+  font-size: 24px;
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.collapseSegment .segment a {
+  text-decoration: none;
+  color: #c26b38;
+}
+.collapseSegment .segment a:hover {
+  color: #ffe467;
+  text-decoration: underline;
+}
+.collapseSegment .segment ul {
+  list-style: square;
+}
+.collapseSegment .segment ul li {
+  margin: 10px;
+}
+.collapseSegment .icon {
+  margin: 0 5px;
+  width: 24px;
+  transition: transform 0.5s ease;
+}
+
+.topBar {
+  height: 70px;
+  display: flex;
+}
+
+.playerWrapper {
+  width: 50%;
+  display: flex;
+  align-items: center;
+}
+
+.dice {
+  height: 50px;
+  margin: 10px;
+}
+
 .canvasWrapper {
   display: flex;
   justify-content: center;
 }
 
-canvas {
+#canvasBg {
   margin: 10px;
+  background: url(../../assets/imgs/mountainPath.jpg);
+  background-size: cover;
+}
+
+canvas {
   box-shadow: 0 0 15px #c26b38;
+}
+
+#gameOverlay {
+  position: fixed;
+  top: 90px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  padding: 10px 20px;
+  background: rgba(194, 107, 56, 0.7);
+  border: 1px solid #26150b;
 }
 
 /*# sourceMappingURL=styles.css.map */

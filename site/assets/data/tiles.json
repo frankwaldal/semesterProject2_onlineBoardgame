@@ -1,0 +1,241 @@
+[{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": true,
+    "opponent": "5 Goblins",
+    "imgUrl": "assets/imgs/goblin.png",
+    "dices": 3,
+    "roll": 3,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": true,
+    "opponent": "2 Goblin Archers",
+    "imgUrl": "assets/imgs/goblinArcher.png",
+    "dices": 2,
+    "roll": 4,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": true,
+    "opponent": "a single Goblin",
+    "imgUrl": "assets/imgs/goblin.png",
+    "dices": 1,
+    "roll": 3,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": true,
+    "opponent": "a Witch",
+    "imgUrl": "assets/imgs/witch.png",
+    "dices": 1,
+    "roll": 4,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": true,
+    "opponent": "5 Werewolfs",
+    "imgUrl": "assets/imgs/werewolf.png",
+    "dices": 4,
+    "roll": 3,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": true,
+    "opponent": "3 Werewolfs",
+    "imgUrl": "assets/imgs/werewolf.png",
+    "dices": 2,
+    "roll": 3,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": true,
+    "opponent": "a Fire Dragon",
+    "imgUrl": "assets/imgs/dragon.png",
+    "dices": 4,
+    "roll": 4,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+},{
+    "battle": false,
+    "opponent": "",
+    "imgUrl": "",
+    "dices": null,
+    "roll": null,
+    "x": 0,
+    "y": 0
+}]

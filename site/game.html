@@ -2,12 +2,39 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Online Boardgame</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Climb to the Mist Mountain</title>
         <link rel="stylesheet" href="styles/css/styles.css">
     </head>
     <body>
+        <div class="topBar">
+            <div class="playerWrapper">
+                <div id="playerOneToken">
+                </div>
+                <div id="playerOneInfo">
+                </div>
+                <button id="playerOne">Roll</button>
+                <div class="diceWrapper" id="p1DiceWrapper">
+                    <img src="assets/svg/p1OneDice.svg" alt="Player 1 Dice" class="dice">
+                </div>
+            </div>
+            <div class="playerWrapper">
+                <button id="playerTwo">Roll</button>
+                <div class="diceWrapper" id="p2DiceWrapper">
+                    <img src="assets/svg/p2OneDice.svg" alt="Player 2 Dice" class="dice">
+                </div>
+                <div id="playerTwoInfo">
+                </div>
+                <div id="playerTwoToken">
+                </div>
+            </div>
+        </div>
         <div class="canvasWrapper">
-            <canvas id="canvas"></canvas>
+            <div id="canvasBg">
+                <canvas id="canvas"></canvas>
+            </div>
+        </div>
+        <div id="gameOverlay">
         </div>
         <script src="scripts/lodash.min.js" charset="utf-8"></script>
         <script src="scripts/game.js" charset="utf-8"></script>
