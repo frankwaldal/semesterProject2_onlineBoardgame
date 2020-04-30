@@ -1,15 +1,64 @@
 .topBar {
     height: 70px;
     display: flex;
-}
-.playerWrapper {
-    width: 50%;
-    display: flex;
-    align-items: center;
-}
-.dice {
-    height: 50px;
-    margin: 10px;
+    & .playerWrapper {
+        width: 50%;
+        display: flex;
+        align-items: center;
+        & .playerToken {
+            margin: 0 10px;
+            height: 70px;
+            width: 70px;
+            position: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            & img {
+                max-width: 65px;
+                max-height: 65px;
+            }
+        }
+        & #playerOneToken {
+            top: 0;
+            left: 10px;
+        }
+        & #playerTwoToken {
+            top: 0;
+            right: 10px;
+        }
+        & .token {
+            height: 110px;
+            position: fixed;
+            z-index: -1;
+        }
+        & #p1Token {
+            left: -22px;
+        }
+        & #p2Token {
+            right: -22px;
+        }
+        & .playerInfo {
+            margin: 0 10px;
+            & p {
+                margin: 10px;
+            }
+        }
+        & #playerOneInfo {
+            margin-left: 100px;
+            margin-right: auto;
+        }
+        & #playerTwoInfo {
+            margin-left: auto;
+            margin-right: 100px;
+        }
+        & .diceWrapper {
+            width: 50px;
+        }
+        & .dice {
+            height: 40px;
+            margin: 0 5px;
+        }
+    }
 }
 .canvasWrapper {
     display: flex;
@@ -31,4 +80,12 @@ canvas {
     padding: 10px 20px;
     background: rgba(194, 107, 56, 0.7);
     border: 1px solid $darkBrown;
+    & p {
+        font-size: 20px;
+        font-weight: bold;
+        color: $darkBrown;
+    }
+    & button {
+        float: right;
+    }
 }

@@ -67,6 +67,16 @@ footer {
   width: 100vw;
 }
 
+.extraMarginTop {
+  margin-top: 30px !important;
+}
+
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
 header {
   display: flex;
   align-items: center;
@@ -188,16 +198,63 @@ main input {
   height: 70px;
   display: flex;
 }
-
-.playerWrapper {
+.topBar .playerWrapper {
   width: 50%;
   display: flex;
   align-items: center;
 }
-
-.dice {
-  height: 50px;
+.topBar .playerWrapper .playerToken {
+  margin: 0 10px;
+  height: 70px;
+  width: 70px;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.topBar .playerWrapper .playerToken img {
+  max-width: 65px;
+  max-height: 65px;
+}
+.topBar .playerWrapper #playerOneToken {
+  top: 0;
+  left: 10px;
+}
+.topBar .playerWrapper #playerTwoToken {
+  top: 0;
+  right: 10px;
+}
+.topBar .playerWrapper .token {
+  height: 110px;
+  position: fixed;
+  z-index: -1;
+}
+.topBar .playerWrapper #p1Token {
+  left: -22px;
+}
+.topBar .playerWrapper #p2Token {
+  right: -22px;
+}
+.topBar .playerWrapper .playerInfo {
+  margin: 0 10px;
+}
+.topBar .playerWrapper .playerInfo p {
   margin: 10px;
+}
+.topBar .playerWrapper #playerOneInfo {
+  margin-left: 100px;
+  margin-right: auto;
+}
+.topBar .playerWrapper #playerTwoInfo {
+  margin-left: auto;
+  margin-right: 100px;
+}
+.topBar .playerWrapper .diceWrapper {
+  width: 50px;
+}
+.topBar .playerWrapper .dice {
+  height: 40px;
+  margin: 0 5px;
 }
 
 .canvasWrapper {
@@ -223,6 +280,28 @@ canvas {
   padding: 10px 20px;
   background: rgba(194, 107, 56, 0.7);
   border: 1px solid #26150b;
+}
+#gameOverlay p {
+  font-size: 20px;
+  font-weight: bold;
+  color: #26150b;
+}
+#gameOverlay button {
+  float: right;
+}
+
+.winnerWrapper {
+  justify-content: center;
+}
+.winnerWrapper .winner {
+  display: flex;
+}
+.winnerWrapper .winner p {
+  margin: 10px auto;
+  font-size: 20px;
+}
+.winnerWrapper .winner div {
+  margin: 10px auto;
 }
 
 /*# sourceMappingURL=styles.css.map */

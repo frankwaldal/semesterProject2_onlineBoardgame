@@ -17,7 +17,7 @@ function localPlay() {
                         <select id="charOne" onchange="charPreview(this);">
                             ${options}
                         </select>
-                        <label for="charOneNick">Player 1 nickname: </label>
+                        <label for="charOneNick">Player 1 name: </label>
                         <input type="text" id="charOneNick">
                         <div id="charOneSelected">
                             <h2>${chars[0].name}</h2>
@@ -32,7 +32,7 @@ function localPlay() {
                         <select id="charTwo" onchange="charPreview(this);">
                             ${options}
                         </select>
-                        <label for="charTwoNick">Player 2 nickname: </label>
+                        <label for="charTwoNick">Player 2 name: </label>
                         <input type="text" id="charTwoNick">
                         <div id="charTwoSelected">
                             <h2>${chars[0].name}</h2>

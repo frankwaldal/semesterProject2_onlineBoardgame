@@ -7,8 +7,20 @@
         <link rel="stylesheet" href="styles/css/styles.css">
     </head>
     <body>
-        <h1>Placeholder Heading</h1>
-        <p>Placeholder paragraph</p>
+        <header>
+            <img src="assets/svg/logo.svg" alt="Logo" class="logo">
+            <h1>Climb to the Mist Mountain - an online boardgame</h1>
+        </header>
+        <main class="winnerWrapper">
+            <div class="winner column">
+                <h1>Congratulations!</h1>
+                <div id="playerInfo" class="fullWidth column"></div>
+                <p>You won the game!</p>
+                <p class="extraMarginTop">Do you want to play another game?</p>
+                <div><button id="restart">Go!</button></div>
+            </div>
+        </main>
         <script src="scripts/lodash.min.js" charset="utf-8"></script>
+        <script src="scripts/winner.js" charset="utf-8"></script>
     </body>
 </html>

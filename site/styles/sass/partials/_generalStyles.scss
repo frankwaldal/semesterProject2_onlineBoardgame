@@ -62,3 +62,11 @@ footer {
     bottom: 0;
     width: 100vw;
 }
+.extraMarginTop {
+    margin-top: 30px!important;
+}
+.clearfix::after {
+    content: '';
+    clear: both;
+    display: table;
+}

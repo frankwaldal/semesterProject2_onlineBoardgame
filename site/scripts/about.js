@@ -1,5 +1,4 @@
 function expandInfo(e) {
-    console.log(e);
     if (e.target.tagName === 'H2') {
         let id = e.target.id.slice(0,-7);
         if (document.querySelector(`#${id}`).classList.contains('closed')) {

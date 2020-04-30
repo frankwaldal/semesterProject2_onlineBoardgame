@@ -1,0 +1,14 @@
+.winnerWrapper {
+    justify-content: center;
+    & .winner {
+        display: flex;
+        & p {
+            margin: 10px auto;
+            font-size: 20px;
+        }
+        & div {
+            margin: 10px auto;
+        }
+    }
+
+}
