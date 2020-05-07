@@ -48,6 +48,10 @@ button {
 }
 .centerText {
     text-align: center;
+    margin: auto;
+}
+.extraMargin {
+    margin: 20px;
 }
 .column {
     flex-direction: column;
@@ -56,6 +60,84 @@ button {
         margin: 20px auto;
         text-decoration: underline;
     }
+}
+.hidden {
+    display: none;
+}
+#chat {
+    max-width: 700px;
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    background: $lightBrown;
+    box-shadow: 0 0 15px $lightBrown;
+    overflow-y: scroll;
+    height: 80vh;
+    &::-webkit-scrollbar {
+        width: 7px;
+    }
+    &::-webkit-scrollbar-track {
+        background: $yellow;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: darken($yellow, 10%);
+    }
+    &::-webkit-scrollbar-thumb:hover {
+        background: darken($yellow, 25%);
+    }
+    & #messages {
+        background: lighten($lightBrown, 10%);
+        min-height: calc(100% - 142px);
+        & .joinChat {
+            margin: 5px 10px;
+            color: lighten($darkBrown, 10%);
+            font-style: italic;
+        }
+        & .message, .messageRightPush {
+            width: 80%;
+            display: flex;
+            margin-top: 10px;
+            flex-direction: column;
+        }
+        & .message {
+            background: darken($lightBrown, 20%);
+        }
+        & .messageRightPush {
+            margin-left: 20%;
+            background: darken($lightBrown, 10%);
+        }
+        & .headingMessage {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 10px;
+            & p {
+                margin: 0;
+            }
+        }
+        & .content {
+            margin: 5px 10px;
+        }
+    }
+    & textarea {
+        margin: 10px;
+        font-family: $sans;
+        font-size: 20px;
+        background: $darkBrown;
+        color: $yellow;
+        padding: 10px;
+        resize: none;
+        height: 5em;
+    }
+    .sendBox {
+        margin-top: auto;
+        display: flex;
+        align-items: flex-end;
+    }
+}
+#chatToggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
 }
 footer {
     position: fixed;

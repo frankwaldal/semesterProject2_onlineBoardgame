@@ -1,0 +1,19 @@
+{
+  "name": "climb-mist-mountain",
+  "version": "1.0.0",
+  "description": "Serverside for Climb to the Mist Mountain",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Boardgame",
+    "Fantasy"
+  ],
+  "author": "Frank Waldal",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  }
+}

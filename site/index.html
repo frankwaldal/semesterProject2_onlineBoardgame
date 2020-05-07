@@ -20,7 +20,7 @@
             <div class="playSelection">
                 <h2>Online Play</h2>
                 <p>Play online against other players, in seperate browsers.</p>
-                <button id="onlinePlay">Pick Characters</button>
+                <button id="onlinePlay">Find Game</button>
             </div>
             <div class="fullWidth column">
                 <h1>About this game</h1>
@@ -35,7 +35,7 @@
                         <ul>
                             <li>A dice throw decides who starts the game.</li>
                             <li>Rolling a 6 gives you an extra turn.</li>
-                            <li>If you land on a battle tile, you get 6 dices, and you need to roll the required rolls to stay on the tile. If you loose your rolls, you will be sent back 2 tiles.</li>
+                            <li>If you land on a battle tile, you get 5 dices, and you need to roll the required rolls to stay on the tile. If you loose your rolls, you will be sent back 2 tiles.</li>
                             <li>The first to pass the goal tile wins.</li>
                         </ul>
                     </div>
@@ -51,8 +51,12 @@
         <footer>
             <p class="centerText">Created by Frank Waldal, 2020.</p>
         </footer>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" integrity="sha256-bQmrZe4yPnQrLTY+1gYylfNMBuGfnT/HKsCGX+9Xuqo=" crossorigin="anonymous"></script>
         <script src="scripts/lodash.min.js" charset="utf-8"></script>
-        <script src="scripts/about.js" charset="utf-8"></script>
-        <script src="scripts/setup.js" charset="utf-8"></script>
+        <script src="scripts/globalVarsFuncs.js" charset="utf-8"></script>
+        <script src="scripts/index/aboutCommonSetup.js" charset="utf-8"></script>
+        <script src="scripts/index/setupLocal.js" charset="utf-8"></script>
+        <script src="scripts/index/setupOnline.js" charset="utf-8"></script>
+        <script src="scripts/chat.js" charset="utf-8"></script>
     </body>
 </html>

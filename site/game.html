@@ -8,7 +8,7 @@
     </head>
     <body>
         <div class="topBar">
-            <div class="playerWrapper">
+            <div class="playerWrapper" id="playerOneWrapper">
                 <div id="playerOneToken" class="playerToken">
                 </div>
                 <img src="assets/svg/player1.svg" alt="Player 1 Token" class="token" id="p1Token">
@@ -19,7 +19,7 @@
                     <img src="assets/svg/p1OneDice.svg" alt="Player 1 Dice" class="dice">
                 </div>
             </div>
-            <div class="playerWrapper">
+            <div class="playerWrapper" id="playerTwoWrapper">
                 <div class="diceWrapper" id="p2DiceWrapper">
                     <img src="assets/svg/p2OneDice.svg" alt="Player 2 Dice" class="dice">
                 </div>
@@ -38,7 +38,12 @@
         </div>
         <div id="gameOverlay">
         </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" integrity="sha256-bQmrZe4yPnQrLTY+1gYylfNMBuGfnT/HKsCGX+9Xuqo=" crossorigin="anonymous"></script>
         <script src="scripts/lodash.min.js" charset="utf-8"></script>
-        <script src="scripts/game.js" charset="utf-8"></script>
+        <script src="scripts/globalVarsFuncs.js" charset="utf-8"></script>
+        <script src="scripts/game/commonGame.js" charset="utf-8"></script>
+        <script src="scripts/game/localGame.js" charset="utf-8"></script>
+        <script src="scripts/game/onlineGame.js" charset="utf-8"></script>
+        <script src="scripts/chat.js" charset="utf-8"></script>
     </body>
 </html>

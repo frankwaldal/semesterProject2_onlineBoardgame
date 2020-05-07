@@ -50,6 +50,11 @@ button:active {
 
 .centerText {
   text-align: center;
+  margin: auto;
+}
+
+.extraMargin {
+  margin: 20px;
 }
 
 .column {
@@ -59,6 +64,87 @@ button:active {
 .column h1 {
   margin: 20px auto;
   text-decoration: underline;
+}
+
+.hidden {
+  display: none;
+}
+
+#chat {
+  max-width: 700px;
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  background: #c26b38;
+  box-shadow: 0 0 15px #c26b38;
+  overflow-y: scroll;
+  height: 80vh;
+}
+#chat::-webkit-scrollbar {
+  width: 7px;
+}
+#chat::-webkit-scrollbar-track {
+  background: #ffe467;
+}
+#chat::-webkit-scrollbar-thumb {
+  background: #ffdb34;
+}
+#chat::-webkit-scrollbar-thumb:hover {
+  background: #e7be00;
+}
+#chat #messages {
+  background: #d0875d;
+  min-height: calc(100% - 142px);
+}
+#chat #messages .joinChat {
+  margin: 5px 10px;
+  color: #4e2b16;
+  font-style: italic;
+}
+#chat #messages .message, #chat #messages .messageRightPush {
+  width: 80%;
+  display: flex;
+  margin-top: 10px;
+  flex-direction: column;
+}
+#chat #messages .message {
+  background: #733f21;
+}
+#chat #messages .messageRightPush {
+  margin-left: 20%;
+  background: #9a552d;
+}
+#chat #messages .headingMessage {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 10px;
+}
+#chat #messages .headingMessage p {
+  margin: 0;
+}
+#chat #messages .content {
+  margin: 5px 10px;
+}
+#chat textarea {
+  margin: 10px;
+  font-family: "Goudy Sans";
+  font-size: 20px;
+  background: #26150b;
+  color: #ffe467;
+  padding: 10px;
+  resize: none;
+  height: 5em;
+}
+#chat .sendBox {
+  margin-top: auto;
+  display: flex;
+  align-items: flex-end;
+}
+
+#chatToggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
 }
 
 footer {
@@ -111,6 +197,7 @@ main .fullWidth {
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 main .playSelection {
   margin-top: 50px;
