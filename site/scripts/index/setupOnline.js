@@ -13,7 +13,6 @@ socket.on('charUpdate', data => {
     }
 });
 socket.on('charCheck', data => {
-    console.log(data);
     if (onlinePlayer.nr !== data.nr) {
         if (onlinePlayer.nr === 1) {
             if (onlinePlayer.name === data.name) {
@@ -221,13 +220,25 @@ const startOnlineGame = () => {
     let char;
     if (onlinePlayer.nr === 1) {
         char = document.querySelector('#charOne');
+        socket.emit('startGetUsers', sessionID);
+        socket.on('startCurrentUsers', data => {
+            console.log(data);
+            if (data.length < 2) {
+                document.querySelector('#error').innerHTML = 'Please wait for second player.';
+            } else {
+                onlinePlayer = {...onlinePlayer, ...chars[char.value]};
+                onlinePlayer['socketID'] = socketID;
+                socket.emit('charCheck', onlinePlayer);
+                localStorage.setItem('player', JSON.stringify(onlinePlayer));
+            }
+        });
     } else {
         char = document.querySelector('#charTwo');
+        onlinePlayer = {...onlinePlayer, ...chars[char.value]};
+        onlinePlayer['socketID'] = socketID;
+        socket.emit('charCheck', onlinePlayer);
+        localStorage.setItem('player', JSON.stringify(onlinePlayer));
     }
-    onlinePlayer = {...onlinePlayer, ...chars[char.value]};
-    onlinePlayer['socketID'] = socketID;
-    socket.emit('charCheck', onlinePlayer);
-    localStorage.setItem('player', JSON.stringify(onlinePlayer));
 }
 
 document.querySelector('#onlinePlay').addEventListener('click', onlinePlay);

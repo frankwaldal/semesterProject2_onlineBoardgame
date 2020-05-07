@@ -20,6 +20,9 @@ io.on('connection', socket => {
     socket.on('getUsers', data => {
         socket.emit('currentUsers', io.sockets.adapter.rooms[data]);
     });
+    socket.on('startGetUsers', data => {
+        socket.emit('startCurrentUsers', io.sockets.adapter.rooms[data]);
+    });
     socket.on('joinChat', data => {
         io.emit('joinChat', data);
     });
@@ -52,6 +55,9 @@ io.on('connection', socket => {
     });
     socket.on('p2Rolled', data => {
         io.to(data.sessionID).emit('p2Rolled', data);
+    });
+    socket.on('tilesData', data => {
+        io.to(data.sessionID).emit('tilesData', data);
     });
     socket.on('p1MoveRolled', data => {
         io.to(data.sessionID).emit('p1MoveRolled', data);

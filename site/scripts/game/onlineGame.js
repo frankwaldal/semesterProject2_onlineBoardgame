@@ -25,12 +25,7 @@ socket.on('p1Roll', () => {
 socket.on('p1Rolled', data => {
     if (player.nr === 2) {
         clearInterval(rolling);
-        let dices = ['assets/svg/p1OneDice.svg','assets/svg/p1TwoDice.svg','assets/svg/p1ThreeDice.svg','assets/svg/p1FourDice.svg','assets/svg/p1FiveDice.svg','assets/svg/p1SixDice.svg'];
-        document.querySelector('#p1DiceWrapper').innerHTML = `<img src="${dices[data.roll - 1]}" alt="Player 1 Dice" class="dice">`;
-        p1StartRoll = data.roll;
-        document.querySelector('#gameOverlay').style.display = 'block';
-        document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>Roll for who to start.</p><p>${playerTwo.nick} roll second.</p>`;
-        document.querySelector('#playerTwo').addEventListener('click', decideStarterThree);
+        switchRollDecider(data.roll);
     }
 });
 socket.on('p2Roll', () => {
@@ -41,24 +36,13 @@ socket.on('p2Roll', () => {
 socket.on('p2Rolled', data => {
     if (player.nr === 1) {
         clearInterval(rolling);
-        let dices = ['assets/svg/p2OneDice.svg','assets/svg/p2TwoDice.svg','assets/svg/p2ThreeDice.svg','assets/svg/p2FourDice.svg','assets/svg/p2FiveDice.svg','assets/svg/p2SixDice.svg'];
-        document.querySelector('#p2DiceWrapper').innerHTML = `<img src="${dices[data.roll - 1]}" alt="Player 2 Dice" class="dice">`;
-        p2StartRoll = data.roll;
-        if (p1StartRoll > p2StartRoll) {
-            turn = 1;
-            document.querySelector('#gameOverlay').style.display = 'block';
-            document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${playerOne.nick} starts.</p>`;
-            initiateBoard(0, 0);
-        } else if (p2StartRoll > p1StartRoll) {
-            turn = 2;
-            document.querySelector('#gameOverlay').style.display = 'block';
-            document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${playerTwo.nick} starts.</p>`;
-            initiateBoard(0, 0);
-        } else if (p1StartRoll === p2StartRoll) {
-            document.querySelector('#gameOverlay').style.display = 'block';
-            document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>You rolled the same, try again.</p><p>${playerOne.nick} roll first.</p>`;
-            document.querySelector('#playerOne').addEventListener('click', decideStarterTwo);
-        }
+        rollDecided(data.roll);
+    }
+});
+socket.on('tilesData', data => {
+    if (player.nr === 2) {
+        tiles = data.tiles;
+        finishInitBoard(0, 0, data.coords);
     }
 });
 socket.on('p1MoveRolled', data => {
@@ -112,7 +96,6 @@ if (window.location.search.substring(1) === 'online') {
         let data = {...playerOne};
         socket.emit('joinRoom', playerOne.sessionID);
         socket.emit('getPlayerInfo', data);
-        playerOne['you'] = true;
         sessionID = playerOne.sessionID;
         socketID = playerOne.socketID;
         nick = playerOne.nick;
@@ -126,7 +109,6 @@ if (window.location.search.substring(1) === 'online') {
             </div>`;
     } else {
         playerTwo = {...playerTwo, ...player};
-        playerTwo['you'] = true;
         sessionID = playerTwo.sessionID;
         socketID = playerTwo.socketID;
         nick = playerTwo.nick;

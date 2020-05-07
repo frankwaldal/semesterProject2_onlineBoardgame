@@ -70,15 +70,19 @@ const decideStarterTwo = () => {
             }
             socket.emit('p1Rolled', data);
         }
-        let dices = ['assets/svg/p1OneDice.svg','assets/svg/p1TwoDice.svg','assets/svg/p1ThreeDice.svg','assets/svg/p1FourDice.svg','assets/svg/p1FiveDice.svg','assets/svg/p1SixDice.svg'];
-        document.querySelector('#p1DiceWrapper').innerHTML = `<img src="${dices[roll - 1]}" alt="Player 1 Dice" class="dice">`;
-        p1StartRoll = roll;
-        document.querySelector('#gameOverlay').style.display = 'block';
-        document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>Roll for who to start.</p><p>${playerTwo.nick} roll second.</p>`;
-        if (window.location.search.substring(1) === 'local') {
-            document.querySelector('#playerTwo').addEventListener('click', decideStarterThree);
-        }
+        switchRollDecider(roll);
     }, 2500);
+}
+
+const switchRollDecider = roll => {
+    let dices = ['assets/svg/p1OneDice.svg','assets/svg/p1TwoDice.svg','assets/svg/p1ThreeDice.svg','assets/svg/p1FourDice.svg','assets/svg/p1FiveDice.svg','assets/svg/p1SixDice.svg'];
+    document.querySelector('#p1DiceWrapper').innerHTML = `<img src="${dices[roll - 1]}" alt="Player 1 Dice" class="dice">`;
+    p1StartRoll = roll;
+    document.querySelector('#gameOverlay').style.display = 'block';
+    document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>Roll for who to start.</p><p>${playerTwo.nick} roll second.</p>`;
+    if (window.location.search.substring(1) === 'local' || player.nr === 2) {
+        document.querySelector('#playerTwo').addEventListener('click', decideStarterThree);
+    }
 }
 
 const decideStarterThree = () => {
@@ -97,27 +101,35 @@ const decideStarterThree = () => {
             }
             socket.emit('p2Rolled', data);
         }
-        let dices = ['assets/svg/p2OneDice.svg','assets/svg/p2TwoDice.svg','assets/svg/p2ThreeDice.svg','assets/svg/p2FourDice.svg','assets/svg/p2FiveDice.svg','assets/svg/p2SixDice.svg'];
-        document.querySelector('#p2DiceWrapper').innerHTML = `<img src="${dices[roll - 1]}" alt="Player 2 Dice" class="dice">`;
-        p2StartRoll = roll;
-        if (p1StartRoll > p2StartRoll) {
-            turn = 1;
-            document.querySelector('#gameOverlay').style.display = 'block';
-            document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${playerOne.nick} starts.</p>`;
-            initiateBoard(0, 0);
-        } else if (p2StartRoll > p1StartRoll) {
-            turn = 2;
-            document.querySelector('#gameOverlay').style.display = 'block';
-            document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${playerTwo.nick} starts.</p>`;
-            initiateBoard(0, 0);
-        } else if (p1StartRoll === p2StartRoll) {
-            document.querySelector('#gameOverlay').style.display = 'block';
-            document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>You rolled the same, try again.</p><p>${playerOne.nick} roll first.</p>`;
-            if (window.location.search.substring(1) === 'local') {
-                document.querySelector('#playerOne').addEventListener('click', decideStarterTwo);
-            }
-        }
+        rollDecided(roll);
     }, 2500);
+}
+
+const rollDecided = roll => {
+    let dices = ['assets/svg/p2OneDice.svg','assets/svg/p2TwoDice.svg','assets/svg/p2ThreeDice.svg','assets/svg/p2FourDice.svg','assets/svg/p2FiveDice.svg','assets/svg/p2SixDice.svg'];
+    document.querySelector('#p2DiceWrapper').innerHTML = `<img src="${dices[roll - 1]}" alt="Player 2 Dice" class="dice">`;
+    p2StartRoll = roll;
+    if (p1StartRoll > p2StartRoll) {
+        turn = 1;
+        document.querySelector('#gameOverlay').style.display = 'block';
+        document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${playerOne.nick} starts.</p>`;
+        if (window.location.search.substring(1) === 'local' || player.nr === 1) {
+            initiateBoard(0, 0);
+        }
+    } else if (p2StartRoll > p1StartRoll) {
+        turn = 2;
+        document.querySelector('#gameOverlay').style.display = 'block';
+        document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${playerTwo.nick} starts.</p>`;
+        if (window.location.search.substring(1) === 'local' || player.nr === 1) {
+            initiateBoard(0, 0);
+        }
+    } else if (p1StartRoll === p2StartRoll) {
+        document.querySelector('#gameOverlay').style.display = 'block';
+        document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>You rolled the same, try again.</p><p>${playerOne.nick} roll first.</p>`;
+        if (window.location.search.substring(1) === 'local' || player.nr === 1) {
+            document.querySelector('#playerOne').addEventListener('click', decideStarterTwo);
+        }
+    }
 }
 
 const initiateBoard = (positionOne, positionTwo) => {
@@ -129,31 +141,43 @@ const initiateBoard = (positionOne, positionTwo) => {
                     .then(resolve => {
                         resolve.json().then(data => {
                             tiles = _.shuffle(data);
-                            goalX = canvas.width * 0.205;
-                            goalY = canvas.height * 0.23;
-                            startX = canvas.width * 0.6;
-                            startY = canvas.height - ((canvas.height * 0.12) + 5);
-                            for (let i=0;i < tiles.length;i++) {
-                                tiles[i].x = canvas.width * coords[i].x;
-                                tiles[i].y = canvas.height * coords[i].y;
-                            }
-                            movePieces(positionOne, positionTwo);
-                            if (window.location.search.substring(1) === 'local') {
-                                document.querySelector('#playerOne').addEventListener('click', playerOneRoll);
-                                document.querySelector('#playerTwo').addEventListener('click', playerTwoRoll);
-                            } else {
-                                if (player.nr === 1) {
-                                    document.querySelector('#playerOne').addEventListener('click', playerOneRoll);
-                                } else {
-                                    document.querySelector('#playerTwo').addEventListener('click', playerTwoRoll);
+                            if (window.location.search.substring(1) === 'online') {
+                                let data = {
+                                    sessionID: playerOne.sessionID,
+                                    tiles: tiles,
+                                    coords: coords
                                 }
+                                socket.emit('tilesData', data);
                             }
+                            finishInitBoard(positionOne, positionTwo, coords);
                         })
                     })
                     .catch(err => {console.log(err)});
             })
         })
         .catch(err => {console.log(err)});
+}
+
+const finishInitBoard = (positionOne, positionTwo, coords) => {
+    goalX = canvas.width * 0.205;
+    goalY = canvas.height * 0.23;
+    startX = canvas.width * 0.6;
+    startY = canvas.height - ((canvas.height * 0.12) + 5);
+    for (let i=0;i < tiles.length;i++) {
+        tiles[i].x = canvas.width * coords[i].x;
+        tiles[i].y = canvas.height * coords[i].y;
+    }
+    movePieces(positionOne, positionTwo);
+    if (window.location.search.substring(1) === 'local') {
+        document.querySelector('#playerOne').addEventListener('click', playerOneRoll);
+        document.querySelector('#playerTwo').addEventListener('click', playerTwoRoll);
+    } else {
+        if (player.nr === 1) {
+            document.querySelector('#playerOne').addEventListener('click', playerOneRoll);
+        } else {
+            document.querySelector('#playerTwo').addEventListener('click', playerTwoRoll);
+        }
+    }
 }
 
 const movePieces = (positionOne, positionTwo) => {
@@ -164,8 +188,8 @@ const movePieces = (positionOne, positionTwo) => {
                 playerTwoToken.src = 'assets/svg/player2.svg';
                 playerTwoToken.onload = function() {
                     let tokenWidth = canvas.width * 0.05;
-                    let tokenFactor = tokenWidth / playerOneToken.width;
-                    let tokenHeight = playerOneToken.height * tokenFactor;
+                    let tokenFactor = tokenWidth / playerTwoToken.width;
+                    let tokenHeight = playerTwoToken.height * tokenFactor;
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     ctx.drawImage(playerOneToken, (startX + (tokenWidth / 2)), (startY + tokenHeight), tokenWidth, tokenHeight);
                     ctx.drawImage(playerTwoToken, (startX + (tokenWidth)), (startY + tokenHeight), tokenWidth, tokenHeight);
