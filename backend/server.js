@@ -44,38 +44,23 @@ io.on('connection', socket => {
     socket.on('getPlayerInfo', data => {
         io.to(data.sessionID).emit('getPlayerInfo', data);
     });
-    socket.on('p1Roll', data => {
-        io.to(data).emit('p1Roll');
+    socket.on('roll', data => {
+        io.to(data.sessionID).emit('roll', data);
     });
-    socket.on('p1Rolled', data => {
-        io.to(data.sessionID).emit('p1Rolled', data);
-    });
-    socket.on('p2Roll', data => {
-        io.to(data).emit('p2Roll');
-    });
-    socket.on('p2Rolled', data => {
-        io.to(data.sessionID).emit('p2Rolled', data);
+    socket.on('decideRolled', data => {
+        io.to(data.sessionID).emit('decideRolled', data);
     });
     socket.on('tilesData', data => {
         io.to(data.sessionID).emit('tilesData', data);
     });
-    socket.on('p1MoveRolled', data => {
-        io.to(data.sessionID).emit('p1MoveRolled', data);
+    socket.on('moveRolled', data => {
+        io.to(data.sessionID).emit('moveRolled', data);
     });
-    socket.on('p2MoveRolled', data => {
-        io.to(data.sessionID).emit('p2MoveRolled', data);
+    socket.on('battleRoll', data => {
+        io.to(data.sessionID).emit('battleRoll', data);
     });
-    socket.on('p1BattleRoll', data => {
-        io.to(data).emit('p1BattleRoll');
-    });
-    socket.on('p1BattleRolled', data => {
-        io.to(data.sessionID).emit('p1BattleRolled', data);
-    });
-    socket.on('p2BattleRoll', data => {
-        io.to(data).emit('p2BattleRoll');
-    });
-    socket.on('p2BattleRolled', data => {
-        io.to(data.sessionID).emit('p2BattleRolled', data);
+    socket.on('battleRolled', data => {
+        io.to(data.player.sessionID).emit('battleRolled', data);
     });
 });
 

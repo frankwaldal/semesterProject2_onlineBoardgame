@@ -17,66 +17,47 @@ socket.on('getPlayerInfo', data => {
         }
     }
 });
-socket.on('p1Roll', () => {
-    if (player.nr === 2) {
-        rolling = setInterval(playerOneRollingDice, 100);
+socket.on('roll', data => {
+    if (player.nr !== data.nr) {
+        rolling = setInterval(() => {
+            rollingDice(data.nr);
+        }, 100);
     }
 });
-socket.on('p1Rolled', data => {
-    if (player.nr === 2) {
+socket.on('decideRolled', data => {
+    if (player.nr !== data.nr) {
         clearInterval(rolling);
-        switchRollDecider(data.roll);
-    }
-});
-socket.on('p2Roll', () => {
-    if (player.nr === 1) {
-        rolling = setInterval(playerTwoRollingDice, 100);
-    }
-});
-socket.on('p2Rolled', data => {
-    if (player.nr === 1) {
-        clearInterval(rolling);
-        rollDecided(data.roll);
+        if (data.nr === 1) {
+            switchRollDecider(data.roll);
+        } else {
+            rollDecided(data.roll);
+        }
     }
 });
 socket.on('tilesData', data => {
     if (player.nr === 2) {
         tiles = data.tiles;
-        finishInitBoard(0, 0, data.coords);
+        finishInitBoard(data.coords);
     }
 });
-socket.on('p1MoveRolled', data => {
-    if (player.nr === 2) {
+socket.on('moveRolled', data => {
+    if (player.nr !== data.nr) {
         clearInterval(rolling);
-        playerOneMoveRolled(data.roll);
+        roll = data.roll;
+        playerMoveRolled(data.nr, data.roll);
     }
 });
-socket.on('p2MoveRolled', data => {
-    if (player.nr === 1) {
+socket.on('battleRoll', data => {
+    if (data.nr !== player.nr) {
+        rolling = setInterval(() => {
+            battleRollingDice(data.nr);
+        }, 100);
+    }
+});
+socket.on('battleRolled', data => {
+    if (data.nr !== player.nr) {
         clearInterval(rolling);
-        playerTwoMoveRolled(data.roll);
-    }
-});
-socket.on('p1BattleRoll', data => {
-    if (player.nr === 2) {
-        rolling = setInterval(playerOneBattleRollingDice, 100);
-    }
-});
-socket.on('p2BattleRoll', data => {
-    if (player.nr === 1) {
-        rolling = setInterval(playerTwoBattleRollingDice, 100);
-    }
-});
-socket.on('p1BattleRolled', data => {
-    if (player.nr === 2) {
-        clearInterval(rolling);
-        playerOneBattleRolled(data.rolls, playerOne);
-    }
-});
-socket.on('p2BattleRolled', data => {
-    if (player.nr === 1) {
-        clearInterval(rolling);
-        playerTwoBattleRolled(data.rolls, playerTwo);
+        battleRolled(data.rolls, data.player);
     }
 });
 
@@ -100,7 +81,7 @@ if (window.location.search.substring(1) === 'online') {
         socketID = playerOne.socketID;
         nick = playerOne.nick;
         document.querySelector('#playerTwoWrapper').innerHTML = `<div class="diceWrapper" id="p2DiceWrapper">
-                <img src="assets/svg/p2OneDice.svg" alt="Player 2 Dice" class="dice">
+                <img src="assets/svg/p2Dice1.svg" alt="Player 2 Dice" class="dice">
             </div>
             <div id="playerTwoInfo" class="playerInfo">
             </div>
@@ -119,7 +100,7 @@ if (window.location.search.substring(1) === 'online') {
             <div id="playerOneInfo" class="playerInfo">
             </div>
             <div class="diceWrapper" id="p1DiceWrapper">
-                <img src="assets/svg/p1OneDice.svg" alt="Player 1 Dice" class="dice">
+                <img src="assets/svg/p1Dice1.svg" alt="Player 1 Dice" class="dice">
             </div>`;
     }
 }

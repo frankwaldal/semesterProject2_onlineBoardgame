@@ -21,8 +21,8 @@ let oldPositions = {
 let rolling;
 
 const canvas = document.querySelector('#canvas');
-let idealWidth = 1280;
-let idealHeight = 850;
+const idealWidth = 1280;
+const idealHeight = 850;
 let width = window.innerWidth - 20;
 let factor = width / idealWidth;
 let height = idealHeight * factor
@@ -38,6 +38,8 @@ canvas.height = height;
 const ctx = canvas.getContext('2d');
 const playerOneToken = new Image();
 const playerTwoToken = new Image();
+let tokenWidth = 0;
+let tokenHeight = 0;
 
 const popTopBar = () => {
     document.querySelector('#playerOneToken').innerHTML = `<img src="${playerOne.imgUrl}" alt="${playerOne.name}">`;
@@ -49,33 +51,40 @@ const popTopBar = () => {
 const decideStarter = selecter => {
     document.querySelector('#gameOverlay').style.display = 'block';
     document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>Roll for who to start.</p><p>${playerOne.nick} roll first.</p>`;
-    if (selecter === 'local' || selecter === 'p1') {
+    if (selecter === 'p1') {
         document.querySelector('#playerOne').addEventListener('click', decideStarterTwo);
     }
 }
 
 const decideStarterTwo = () => {
     document.querySelector('#playerOne').removeEventListener('click', decideStarterTwo);
-    rolling = setInterval(playerOneRollingDice, 100);
+    rolling = setInterval(() => {
+        rollingDice(playerOne.nr);
+    }, 100);
     if (window.location.search.substring(1) === 'online') {
-        socket.emit('p1Roll', playerOne.sessionID);
+        let data = {
+            nr: 1,
+            sessionID: playerOne.sessionID
+        }
+        socket.emit('roll', data);
     }
-    setTimeout(function() {
+    setTimeout(() => {
         clearInterval(rolling);
         let roll = _.random(1,6);
         if (window.location.search.substring(1) === 'online') {
             let data = {
+                nr: 1,
                 sessionID: playerOne.sessionID,
                 roll: roll
             }
-            socket.emit('p1Rolled', data);
+            socket.emit('decideRolled', data);
         }
         switchRollDecider(roll);
     }, 2500);
 }
 
 const switchRollDecider = roll => {
-    let dices = ['assets/svg/p1OneDice.svg','assets/svg/p1TwoDice.svg','assets/svg/p1ThreeDice.svg','assets/svg/p1FourDice.svg','assets/svg/p1FiveDice.svg','assets/svg/p1SixDice.svg'];
+    let dices = ['assets/svg/p1Dice1.svg','assets/svg/p1Dice2.svg','assets/svg/p1Dice3.svg','assets/svg/p1Dice4.svg','assets/svg/p1Dice5.svg','assets/svg/p1Dice6.svg'];
     document.querySelector('#p1DiceWrapper').innerHTML = `<img src="${dices[roll - 1]}" alt="Player 1 Dice" class="dice">`;
     p1StartRoll = roll;
     document.querySelector('#gameOverlay').style.display = 'block';
@@ -87,26 +96,33 @@ const switchRollDecider = roll => {
 
 const decideStarterThree = () => {
     document.querySelector('#playerTwo').removeEventListener('click', decideStarterThree);
-    rolling = setInterval(playerTwoRollingDice, 100);
+    rolling = setInterval(() => {
+        rollingDice(playerTwo.nr);
+    }, 100);
     if (window.location.search.substring(1) === 'online') {
-        socket.emit('p2Roll', playerTwo.sessionID);
+        let data = {
+            nr: 2,
+            sessionID: playerTwo.sessionID
+        }
+        socket.emit('roll', data);
     }
-    setTimeout(function() {
+    setTimeout(() => {
         clearInterval(rolling);
         let roll = _.random(1,6);
         if (window.location.search.substring(1) === 'online') {
             let data = {
+                nr: 2,
                 sessionID: playerTwo.sessionID,
                 roll: roll
             }
-            socket.emit('p2Rolled', data);
+            socket.emit('decideRolled', data);
         }
         rollDecided(roll);
     }, 2500);
 }
 
 const rollDecided = roll => {
-    let dices = ['assets/svg/p2OneDice.svg','assets/svg/p2TwoDice.svg','assets/svg/p2ThreeDice.svg','assets/svg/p2FourDice.svg','assets/svg/p2FiveDice.svg','assets/svg/p2SixDice.svg'];
+    let dices = ['assets/svg/p2Dice1.svg','assets/svg/p2Dice2.svg','assets/svg/p2Dice3.svg','assets/svg/p2Dice4.svg','assets/svg/p2Dice5.svg','assets/svg/p2Dice6.svg'];
     document.querySelector('#p2DiceWrapper').innerHTML = `<img src="${dices[roll - 1]}" alt="Player 2 Dice" class="dice">`;
     p2StartRoll = roll;
     if (p1StartRoll > p2StartRoll) {
@@ -114,14 +130,14 @@ const rollDecided = roll => {
         document.querySelector('#gameOverlay').style.display = 'block';
         document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${playerOne.nick} starts.</p>`;
         if (window.location.search.substring(1) === 'local' || player.nr === 1) {
-            initiateBoard(0, 0);
+            initiateBoard();
         }
     } else if (p2StartRoll > p1StartRoll) {
         turn = 2;
         document.querySelector('#gameOverlay').style.display = 'block';
         document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${playerTwo.nick} starts.</p>`;
         if (window.location.search.substring(1) === 'local' || player.nr === 1) {
-            initiateBoard(0, 0);
+            initiateBoard();
         }
     } else if (p1StartRoll === p2StartRoll) {
         document.querySelector('#gameOverlay').style.display = 'block';
@@ -132,7 +148,7 @@ const rollDecided = roll => {
     }
 }
 
-const initiateBoard = (positionOne, positionTwo) => {
+const initiateBoard = () => {
     fetch('assets/data/coords.json')
         .then(resolve => {
             resolve.json().then(data => {
@@ -149,7 +165,7 @@ const initiateBoard = (positionOne, positionTwo) => {
                                 }
                                 socket.emit('tilesData', data);
                             }
-                            finishInitBoard(positionOne, positionTwo, coords);
+                            finishInitBoard(coords);
                         })
                     })
                     .catch(err => {console.log(err)});
@@ -158,16 +174,33 @@ const initiateBoard = (positionOne, positionTwo) => {
         .catch(err => {console.log(err)});
 }
 
-const finishInitBoard = (positionOne, positionTwo, coords) => {
+const finishInitBoard = coords => {
     goalX = canvas.width * 0.205;
     goalY = canvas.height * 0.23;
     startX = canvas.width * 0.6;
     startY = canvas.height - ((canvas.height * 0.12) + 5);
-    for (let i=0;i < tiles.length;i++) {
-        tiles[i].x = canvas.width * coords[i].x;
-        tiles[i].y = canvas.height * coords[i].y;
+    playerOneToken.src = 'assets/svg/player1.svg';
+    playerOneToken.onload = () => {
+        playerTwoToken.src = 'assets/svg/player2.svg';
+        playerTwoToken.onload = () => {
+            tokenWidth = canvas.width * 0.05;
+            let tokenFactor = tokenWidth / playerTwoToken.width;
+            tokenHeight = playerTwoToken.height * tokenFactor;
+            playerOne['coords'] = [{x: (startX + (tokenWidth / 2)), y: (startY + tokenHeight)}];
+            playerTwo['coords'] = [{x: (startX + tokenWidth), y: (startY + tokenHeight)}];
+            for (let i=0;i < tiles.length;i++) {
+                tiles[i].x = canvas.width * coords[i].x;
+                tiles[i].y = canvas.height * coords[i].y;
+                playerOne.coords.push({x: tiles[i].x, y: (tiles[i].y + (tokenHeight / 1.9))});
+                playerTwo.coords.push({x: tiles[i].x, y: (tiles[i].y - (tokenHeight / 7))});
+            }
+            playerOne.coords.push({x: (goalX + (tokenWidth / 2)), y: (goalY + tokenHeight)});
+            playerTwo.coords.push({x: (goalX + tokenWidth), y: (goalY + tokenHeight)});
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(playerOneToken, playerOne.coords[0].x, playerOne.coords[0].y, tokenWidth, tokenHeight);
+            ctx.drawImage(playerTwoToken, playerTwo.coords[0].x, playerTwo.coords[0].y, tokenWidth, tokenHeight);
+        }
     }
-    movePieces(positionOne, positionTwo);
     if (window.location.search.substring(1) === 'local') {
         document.querySelector('#playerOne').addEventListener('click', playerOneRoll);
         document.querySelector('#playerTwo').addEventListener('click', playerTwoRoll);
@@ -180,296 +213,156 @@ const finishInitBoard = (positionOne, positionTwo, coords) => {
     }
 }
 
-const movePieces = (positionOne, positionTwo) => {
-    if (positionOne === oldPositions.playerOne && positionTwo === oldPositions.playerTwo) {
-        if (positionOne === 0 && positionTwo === 0) {
-            playerOneToken.src = 'assets/svg/player1.svg';
-            playerOneToken.onload = function() {
-                playerTwoToken.src = 'assets/svg/player2.svg';
-                playerTwoToken.onload = function() {
-                    let tokenWidth = canvas.width * 0.05;
-                    let tokenFactor = tokenWidth / playerTwoToken.width;
-                    let tokenHeight = playerTwoToken.height * tokenFactor;
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    ctx.drawImage(playerOneToken, (startX + (tokenWidth / 2)), (startY + tokenHeight), tokenWidth, tokenHeight);
-                    ctx.drawImage(playerTwoToken, (startX + (tokenWidth)), (startY + tokenHeight), tokenWidth, tokenHeight);
-                }
-            }
-        } else {
-            let tokenWidth = canvas.width * 0.05;
-            let tokenFactor = tokenWidth / playerOneToken.width;
-            let tokenHeight = playerOneToken.height * tokenFactor;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (positionOne === 0) {
-                ctx.drawImage(playerOneToken, (startX + (tokenWidth / 2)), (startY + tokenHeight), tokenWidth, tokenHeight);
-                let indexTwo = positionTwo - 1;
-                ctx.drawImage(playerTwoToken, tiles[indexTwo].x, (tiles[indexTwo].y - (tokenHeight / 7)), tokenWidth, tokenHeight);
-            } else if (positionTwo === 0) {
-                let indexOne = positionOne - 1;
-                ctx.drawImage(playerOneToken, tiles[indexOne].x, (tiles[indexOne].y + (tokenHeight / 1.9)), tokenWidth, tokenHeight);
-                ctx.drawImage(playerTwoToken, (startX + (tokenWidth)), (startY + tokenHeight), tokenWidth, tokenHeight);
-            } else {
-                let indexTwo = positionTwo - 1;
-                let indexOne = positionOne - 1;
-                ctx.drawImage(playerOneToken, tiles[indexOne].x, (tiles[indexOne].y + (tokenHeight / 1.9)), tokenWidth, tokenHeight);
-                ctx.drawImage(playerTwoToken, tiles[indexTwo].x, (tiles[indexTwo].y - (tokenHeight / 7)), tokenWidth, tokenHeight);
-            }
-
-
-        }
+const move = (positionOne, positionTwo, p) => {
+    if (p === 0) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(playerOneToken, playerOne.coords[positionOne].x, playerOne.coords[positionOne].y, tokenWidth, tokenHeight);
+        ctx.drawImage(playerTwoToken, playerTwo.coords[positionTwo].x, playerTwo.coords[positionTwo].y, tokenWidth, tokenHeight);
     } else {
         let n = 40;
         let steps = 0;
-        let oldX = 0;
-        let oldY = 0;
+        let frameX = 0;
+        let frameY = 0;
         let newX = 0;
         let newY = 0;
-        let tokenWidth = canvas.width * 0.05;
-        let tokenFactor = tokenWidth / playerOneToken.width;
-        let tokenHeight = playerOneToken.height * tokenFactor;
-        if (positionOne === oldPositions.playerOne) {
-            if (oldPositions.playerTwo === 0) {
-                oldX = startX + tokenWidth;
-                oldY = startY + tokenHeight;
-            } else {
-                oldX = tiles[oldPositions.playerTwo - 1].x;
-                oldY = tiles[oldPositions.playerTwo - 1].y - (tokenHeight / 7);
-            }
-            if (positionTwo === 0) {
-                newX = startX + tokenWidth;
-                newY = startY + tokenHeight;
-            } else if (positionTwo > 30) {
-                newX = goalX + tokenWidth;
-                newY = goalY + tokenHeight;
-            } else {
-                newX = tiles[positionTwo - 1].x;
-                newY = tiles[positionTwo - 1].y - (tokenHeight / 7);
-            }
-            let frameX = oldX;
-            let frameY = oldY;
-            let incrementX = (newX - oldX) / n;
-            let incrementY = (newY - oldY) / n;
-            oldPositions.playerTwo = positionTwo;
-            if (positionOne === 0) {
-                function drawToken() {
-                    if (steps < n) {
-                        frameX += incrementX;
-                        frameY += incrementY;
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        ctx.drawImage(playerOneToken, (startX + (tokenWidth / 2)), (startY + tokenHeight), tokenWidth, tokenHeight);
-                        ctx.drawImage(playerTwoToken, frameX, frameY, tokenWidth, tokenHeight);
-                        steps++;
-                        window.requestAnimationFrame(drawToken);
-                    } else {
-                        if (positionTwo > 30) {
-                            winGame(playerTwo);
-                        }
-                    }
-                }
-                window.requestAnimationFrame(drawToken);
-            } else {
-                function drawToken() {
-                    if (steps < n) {
-                        frameX += incrementX;
-                        frameY += incrementY;
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        let index = positionOne - 1;
-                        ctx.drawImage(playerOneToken, tiles[index].x, (tiles[index].y + (tokenHeight / 1.9)), tokenWidth, tokenHeight);
-                        ctx.drawImage(playerTwoToken, frameX, frameY, tokenWidth, tokenHeight);
-                        steps++;
-                        window.requestAnimationFrame(drawToken);
-                    } else {
-                        if (positionTwo > 30) {
-                            winGame(playerTwo);
-                        }
-                    }
-                }
-                window.requestAnimationFrame(drawToken);
-            }
-        } else {
-            if (oldPositions.playerOne === 0) {
-                oldX = startX + (tokenWidth / 2);
-                oldY = startY + tokenHeight;
-            } else {
-                oldX = tiles[oldPositions.playerOne - 1].x;
-                oldY = tiles[oldPositions.playerOne - 1].y + (tokenHeight / 1.9);
-            }
-            if (positionOne === 0) {
-                newX = startX + (tokenWidth / 2);
-                newY = startY + tokenHeight;
-            } else if (positionOne > 30) {
-                newX = goalX + (tokenWidth / 2);
-                newY = goalY + tokenHeight;
-            } else {
-                newX = tiles[positionOne - 1].x;
-                newY = tiles[positionOne - 1].y + (tokenHeight / 1.9);
-            }
-            let frameX = oldX;
-            let frameY = oldY;
-            let incrementX = (newX - oldX) / n;
-            let incrementY = (newY - oldY) / n;
+        if (p === 1) {
+            frameX = playerOne.coords[oldPositions.playerOne].x;
+            frameY = playerOne.coords[oldPositions.playerOne].y;
+            newX = playerOne.coords[positionOne].x;
+            newY = playerOne.coords[positionOne].y;
             oldPositions.playerOne = positionOne;
-            if (positionTwo === 0) {
-                function drawToken() {
-                    if (steps < n) {
-                        frameX += incrementX;
-                        frameY += incrementY;
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        ctx.drawImage(playerTwoToken, (startX + (tokenWidth)), (startY + tokenHeight), tokenWidth, tokenHeight);
-                        ctx.drawImage(playerOneToken, frameX, frameY, tokenWidth, tokenHeight);
-                        steps++;
-                        window.requestAnimationFrame(drawToken);
-                    } else {
-                        if (positionOne > 30) {
-                            winGame(playerOne);
-                        }
-                    }
-                }
-                window.requestAnimationFrame(drawToken);
-            } else {
-                function drawToken() {
-                    if (steps < n) {
-                        frameX += incrementX;
-                        frameY += incrementY;
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        let index = positionTwo - 1;
-                        ctx.drawImage(playerTwoToken, tiles[index].x, (tiles[index].y - (tokenHeight / 7)), tokenWidth, tokenHeight);
-                        ctx.drawImage(playerOneToken, frameX, frameY, tokenWidth, tokenHeight);
-                        steps++;
-                        window.requestAnimationFrame(drawToken);
-                    } else {
-                        if (positionOne > 30) {
-                            winGame(playerOne);
-                        }
-                    }
-                }
-                window.requestAnimationFrame(drawToken);
-            }
-        }
+       } else {
+           frameX = playerTwo.coords[oldPositions.playerTwo].x;
+           frameY = playerTwo.coords[oldPositions.playerTwo].y;
+           newX = playerTwo.coords[positionTwo].x;
+           newY = playerTwo.coords[positionTwo].y;
+           oldPositions.playerTwo = positionTwo;
+       }
+       let incrementX = (newX - frameX) / n;
+       let incrementY = (newY - frameY) / n;
+       const drawToken = () => {
+           if (steps < n) {
+               frameX += incrementX;
+               frameY += incrementY;
+               ctx.clearRect(0, 0, canvas.width, canvas.height);
+               if (p === 1) {
+                   ctx.drawImage(playerOneToken, frameX, frameY, tokenWidth, tokenHeight);
+                   ctx.drawImage(playerTwoToken, playerTwo.coords[positionTwo].x, playerTwo.coords[positionTwo].y, tokenWidth, tokenHeight);
+               } else {
+                   ctx.drawImage(playerOneToken, playerOne.coords[positionOne].x, playerOne.coords[positionOne].y, tokenWidth, tokenHeight);
+                   ctx.drawImage(playerTwoToken, frameX, frameY, tokenWidth, tokenHeight);
+               }
+               steps++;
+               window.requestAnimationFrame(drawToken);
+           } else {
+               if (p === 1) {
+                   if (positionOne > 30) {
+                       winGame(playerOne);
+                   }
+               } else {
+                   if (positionTwo > 30) {
+                       winGame(playerTwo);
+                   }
+               }
+           }
+       }
+       window.requestAnimationFrame(drawToken);
     }
 }
 
-const playerOneRollingDice = () => {
-    let dices = ['assets/svg/p1OneDice.svg','assets/svg/p1TwoDice.svg','assets/svg/p1ThreeDice.svg','assets/svg/p1FourDice.svg','assets/svg/p1FiveDice.svg','assets/svg/p1SixDice.svg'];
-    dices = _.shuffle(dices);
-    document.querySelector('#p1DiceWrapper').innerHTML = `<img src="${dices[0]}" alt="Player 1 Dice" class="dice">`;
+const rollingDice = p => {
+    let roll = _.random(1,6);
+    document.querySelector(`#p${p}DiceWrapper`).innerHTML = `<img src="assets/svg/p${p}Dice${roll}.svg" alt="Player ${p} Dice" class="dice">`;
 }
 
-const playerTwoRollingDice = () => {
-    let dices = ['assets/svg/p2OneDice.svg','assets/svg/p2TwoDice.svg','assets/svg/p2ThreeDice.svg','assets/svg/p2FourDice.svg','assets/svg/p2FiveDice.svg','assets/svg/p2SixDice.svg'];
-    dices = _.shuffle(dices);
-    document.querySelector('#p2DiceWrapper').innerHTML = `<img src="${dices[0]}" alt="Player 2 Dice" class="dice">`;
+const battleRollingDice = p => {
+    let roll1 = _.random(1,6);
+    let roll2 = _.random(1,6);
+    let roll3 = _.random(1,6);
+    let roll4 = _.random(1,6);
+    let roll5 = _.random(1,6);
+    document.querySelector(`#p${p}DiceWrapper`).innerHTML = `<img src="assets/svg/p${p}Dice${roll1}.svg" alt="Player ${p} Dice" class="dice"><img src="assets/svg/p${p}Dice${roll2}.svg" alt="Player ${p} Dice" class="dice"><img src="assets/svg/p${p}Dice${roll3}.svg" alt="Player ${p} Dice" class="dice"><img src="assets/svg/p${p}Dice${roll4}.svg" alt="Player ${p} Dice" class="dice"><img src="assets/svg/p${p}Dice${roll5}.svg" alt="Player ${p} Dice" class="dice">`;
 }
 
-const playerOneBattleRollingDice = () => {
-    let dices = ['assets/svg/p1OneDice.svg','assets/svg/p1TwoDice.svg','assets/svg/p1ThreeDice.svg','assets/svg/p1FourDice.svg','assets/svg/p1FiveDice.svg','assets/svg/p1SixDice.svg'];
-    let dice1 = _.shuffle(dices);
-    let dice2 = _.shuffle(dices);
-    let dice3 = _.shuffle(dices);
-    let dice4 = _.shuffle(dices);
-    let dice5 = _.shuffle(dices);
-    document.querySelector('#p1DiceWrapper').innerHTML = `<img src="${dice1[0]}" alt="Player 1 Dice" class="dice"><img src="${dice2[0]}" alt="Player 1 Dice" class="dice"><img src="${dice3[0]}" alt="Player 1 Dice" class="dice"><img src="${dice4[0]}" alt="Player 1 Dice" class="dice"><img src="${dice5[0]}" alt="Player 1 Dice" class="dice">`;
-}
-
-const playerTwoBattleRollingDice = () => {
-    let dices = ['assets/svg/p2OneDice.svg','assets/svg/p2TwoDice.svg','assets/svg/p2ThreeDice.svg','assets/svg/p2FourDice.svg','assets/svg/p2FiveDice.svg','assets/svg/p2SixDice.svg'];
-    let dice1 = _.shuffle(dices);
-    let dice2 = _.shuffle(dices);
-    let dice3 = _.shuffle(dices);
-    let dice4 = _.shuffle(dices);
-    let dice5 = _.shuffle(dices);
-    document.querySelector('#p2DiceWrapper').innerHTML = `<img src="${dice1[0]}" alt="Player 2 Dice" class="dice"><img src="${dice2[0]}" alt="Player 2 Dice" class="dice"><img src="${dice3[0]}" alt="Player 2 Dice" class="dice"><img src="${dice4[0]}" alt="Player 2 Dice" class="dice"><img src="${dice5[0]}" alt="Player 2 Dice" class="dice">`;
-}
-
-const playerOneMoveRolled = roll => {
-    let dices = ['assets/svg/p1OneDice.svg','assets/svg/p1TwoDice.svg','assets/svg/p1ThreeDice.svg','assets/svg/p1FourDice.svg','assets/svg/p1FiveDice.svg','assets/svg/p1SixDice.svg'];
-    document.querySelector('#p1DiceWrapper').innerHTML = `<img src="${dices[roll - 1]}" alt="Player 1 Dice" class="dice">`;
+const playerMoveRolled = (p, roll) => {
+    document.querySelector(`#p${p}DiceWrapper`).innerHTML = `<img src="assets/svg/p${p}Dice${roll}.svg" alt="Player ${p} Dice" class="dice">`;
     for (let i=0;i < roll;i++) {
-        let num = i+1;
-        playerOne.position++;
-        let pos = playerOne.position;
-        if (i === (roll-1)) {
-            setTimeout(() => {
-                movePieces(pos, playerTwo.position);
-            }, 750*num);
-            setTimeout(() => {
-                battleCheck(tiles[playerOne.position - 1], playerOne, 1);
-            }, 750*(num+1));
+        let num = i + 1;
+        let movingPlayer;
+        if (p === 1) {
+            playerOne.position++;
+            movingPlayer = playerOne;
         } else {
-            setTimeout(() => {
-                movePieces(pos, playerTwo.position);
-            }, 750*num);
+            playerTwo.position++;
+            movingPlayer = playerTwo;
         }
+        let pos1 = playerOne.position;
+        let pos2 = playerTwo.position;
+        if (i === (roll - 1)) {
+            setTimeout(() => {
+                battleCheck(tiles[movingPlayer.position - 1], movingPlayer, p);
+            }, 750 * (num + 1));
+        }
+        setTimeout(() => {
+            move(pos1, pos2, p);
+        }, 750 * num);
     }
 }
 
-const playerTwoMoveRolled = roll => {
-    let dices = ['assets/svg/p2OneDice.svg','assets/svg/p2TwoDice.svg','assets/svg/p2ThreeDice.svg','assets/svg/p2FourDice.svg','assets/svg/p2FiveDice.svg','assets/svg/p2SixDice.svg'];
-    document.querySelector('#p2DiceWrapper').innerHTML = `<img src="${dices[roll - 1]}" alt="Player 2 Dice" class="dice">`;
-    for (let i=0;i < roll;i++) {
-        let num = i+1;
-        playerTwo.position++;
-        let pos = playerTwo.position;
-        if (i === (roll-1)) {
-            setTimeout(() => {
-                movePieces(playerOne.position, pos);
-            }, 750*num);
-            setTimeout(() => {
-                battleCheck(tiles[playerTwo.position - 1], playerTwo, 2);
-            }, 750*(num+1));
-        } else {
-            setTimeout(() => {
-                movePieces(playerOne.position, pos);
-            }, 750*num);
-        }
-    }
-}
-
-const playerOneBattleRolled = (rolls, battlePlayer) => {
-    let tile = tiles[playerOne.position - 1];
-    let dices = ['assets/svg/p1OneDice.svg','assets/svg/p1TwoDice.svg','assets/svg/p1ThreeDice.svg','assets/svg/p1FourDice.svg','assets/svg/p1FiveDice.svg','assets/svg/p1SixDice.svg'];
-    document.querySelector('#p1DiceWrapper').innerHTML = `<img src="${dices[rolls[0] - 1]}" alt="Player 1 Dice" class="dice"><img src="${dices[rolls[1] - 1]}" alt="Player 1 Dice" class="dice"><img src="${dices[rolls[2] - 1]}" alt="Player 1 Dice" class="dice"><img src="${dices[rolls[3] - 1]}" alt="Player 1 Dice" class="dice"><img src="${dices[rolls[4] - 1]}" alt="Player 1 Dice" class="dice">`;
+const battleRolled = (rolls, battlePlayer) => {
+    let p = battlePlayer.nr;
+    let tile = tiles[battlePlayer.position - 1];
+    document.querySelector(`#p${p}DiceWrapper`).innerHTML = `<img src="assets/svg/p${p}Dice${rolls[0]}.svg" alt="Player ${p} Dice" class="dice"><img src="assets/svg/p${p}Dice${rolls[1]}.svg" alt="Player ${p} Dice" class="dice"><img src="assets/svg/p${p}Dice${rolls[2]}.svg" alt="Player ${p} Dice" class="dice"><img src="assets/svg/p${p}Dice${rolls[3]}.svg" alt="Player ${p} Dice" class="dice"><img src="assets/svg/p${p}Dice${rolls[4]}.svg" alt="Player ${p} Dice" class="dice">`;
     let hit = _.filter(rolls, obj => {
         return obj >= tile.roll;
     });
     if (hit.length < tile.dices) {
-        movePieces(playerOne.position, playerTwo.position);
+        move(playerOne.position, playerTwo.position, 0);
         const loss = new Image();
         loss.src = 'assets/svg/lossTile.svg';
-        loss.onload = function() {
+        loss.onload = () => {
             let width = canvas.width / 2;
             let factor = width / loss.width;
-            let height = loss.height * factor;
+            let height = loss.width * factor;
             let x = (canvas.width / 2) - (width / 2);
             let y = (canvas.height / 2) - (height / 2);
             ctx.drawImage(loss, x, y, width, height);
             document.querySelector('#gameOverlay').style.display = 'block';
-            document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>You lost the battle.</p><p>You move back 2 tiles.</p>`;
+            document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${battlePlayer.nick} lost the battle.</p><p>${battlePlayer.nick} move back 2 tiles.</p>`;
             battle = false;
             for (let i=0;i < 2;i++) {
-                let num = i+1;
-                playerOne.position--;
-                let pos = playerOne.position;
+                let num = i + 1;
+                if (battlePlayer.nr === 1) {
+                    playerOne.position--;
+                } else {
+                    playerTwo.position--;
+                }
+                let pos1 = playerOne.position;
+                let pos2 = playerTwo.position;
                 setTimeout(() => {
-                    movePieces(pos, playerTwo.position);
-                }, 750*num);
+                    move(pos1, pos2, battlePlayer.nr);
+                }, 750 * num);
             }
-            setTimeout(function() {
+            setTimeout(() => {
                 if (roll !== 6) {
-                    turn = 2;
+                    if (battlePlayer.nr === 1) {
+                        turn = 2;
+                    } else {
+                        turn = 1;
+                    }
                 } else {
                     document.querySelector('#gameOverlay').style.display = 'block';
                     document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${battlePlayer.nick} rolled a 6, and takes another turn!</p>`;
                 }
-                document.querySelector(`#p1DiceWrapper`).style.width = '50px';
-                document.querySelector(`#p1DiceWrapper`).innerHTML = '<img src="assets/svg/p1OneDice.svg" alt="Player 1 Dice" class="dice">';
+                document.querySelector(`#p${p}DiceWrapper`).style.width = '50px';
+                document.querySelector(`#p${p}DiceWrapper`).innerHTML = `<img src="assets/svg/p${p}Dice1.svg" alt="Player ${p} Dice" class="dice">`;
             }, 2500);
         }
     } else {
-        movePieces(playerOne.position, playerTwo.position);
+        move(playerOne.position, playerTwo.position, 0);
         const win = new Image();
         win.src = 'assets/svg/winTile.svg';
-        win.onload = function() {
+        win.onload = () => {
             let width = canvas.width / 2;
             let factor = width / win.width;
             let height = win.height * factor;
@@ -477,87 +370,22 @@ const playerOneBattleRolled = (rolls, battlePlayer) => {
             let y = (canvas.height / 2) - (height / 2);
             ctx.drawImage(win, x, y, width, height);
             document.querySelector('#gameOverlay').style.display = 'block';
-            document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>You won the battle.</p><p>Congratulations!</p>`;
+            document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${battlePlayer.nick} won the battle.</p><p>Congratulations!</p>`;
             battle = false;
-            setTimeout(function() {
-                movePieces(playerOne.position, playerTwo.position);
+            setTimeout(() => {
+                move(playerOne.position, playerTwo.position, 0);
                 if (roll !== 6) {
-                    turn = 2;
+                    if (battlePlayer.nr === 1) {
+                        turn = 2;
+                    } else {
+                        turn = 1;
+                    }
                 } else {
                     document.querySelector('#gameOverlay').style.display = 'block';
                     document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${battlePlayer.nick} rolled a 6, and takes another turn!</p>`;
                 }
-                document.querySelector(`#p1DiceWrapper`).style.width = '50px';
-                document.querySelector(`#p1DiceWrapper`).innerHTML = '<img src="assets/svg/p1OneDice.svg" alt="Player 1 Dice" class="dice">';
-            }, 2000);
-        }
-    }
-}
-
-const playerTwoBattleRolled = (rolls, battlePlayer) => {
-    let tile = tiles[playerTwo.position - 1];
-    let dices = ['assets/svg/p2OneDice.svg','assets/svg/p2TwoDice.svg','assets/svg/p2ThreeDice.svg','assets/svg/p2FourDice.svg','assets/svg/p2FiveDice.svg','assets/svg/p2SixDice.svg'];
-    document.querySelector('#p2DiceWrapper').innerHTML = `<img src="${dices[rolls[0] - 1]}" alt="Player 2 Dice" class="dice"><img src="${dices[rolls[1] - 1]}" alt="Player 2 Dice" class="dice"><img src="${dices[rolls[2] - 1]}" alt="Player 2 Dice" class="dice"><img src="${dices[rolls[3] - 1]}" alt="Player 2 Dice" class="dice"><img src="${dices[rolls[4] - 1]}" alt="Player 2 Dice" class="dice">`;
-    let hit = _.filter(rolls, obj => {
-        return obj >= tile.roll;
-    });
-    if (hit.length < tile.dices) {
-        movePieces(playerOne.position, playerTwo.position);
-        const loss = new Image();
-        loss.src = 'assets/svg/lossTile.svg';
-        loss.onload = function() {
-            let width = canvas.width / 2;
-            let factor = width / loss.width;
-            let height = loss.height * factor;
-            let x = (canvas.width / 2) - (width / 2);
-            let y = (canvas.height / 2) - (height / 2);
-            ctx.drawImage(loss, x, y, width, height);
-            document.querySelector('#gameOverlay').style.display = 'block';
-            document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>You lost the battle.</p><p>You move back 2 tiles.</p>`;
-            battle = false;
-            for (let i=0;i < 2;i++) {
-                let num = i+1;
-                playerTwo.position--;
-                let pos = playerTwo.position;
-                setTimeout(() => {
-                    movePieces(playerOne.position, pos);
-                }, 750*num);
-            }
-            setTimeout(function() {
-                if (roll !== 6) {
-                    turn = 1;
-                } else {
-                    document.querySelector('#gameOverlay').style.display = 'block';
-                    document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${battlePlayer.nick} rolled a 6, and takes another turn!</p>`;
-                }
-                document.querySelector(`#p2DiceWrapper`).style.width = '50px';
-                document.querySelector(`#p2DiceWrapper`).innerHTML = '<img src="assets/svg/p2OneDice.svg" alt="Player 2 Dice" class="dice">';
-            }, 2500);
-        }
-    } else {
-        movePieces(playerOne.position, playerTwo.position);
-        const win = new Image();
-        win.src = 'assets/svg/winTile.svg';
-        win.onload = function() {
-            let width = canvas.width / 2;
-            let factor = width / win.width;
-            let height = win.height * factor;
-            let x = (canvas.width / 2) - (width / 2);
-            let y = (canvas.height / 2) - (height / 2);
-            ctx.drawImage(win, x, y, width, height);
-            document.querySelector('#gameOverlay').style.display = 'block';
-            document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>You won the battle.</p><p>Congratulations!</p>`;
-            battle = false;
-            setTimeout(function() {
-                movePieces(playerOne.position, playerTwo.position);
-                if (roll !== 6) {
-                    turn = 1;
-                } else {
-                    document.querySelector('#gameOverlay').style.display = 'block';
-                    document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${battlePlayer.nick} rolled a 6, and takes another turn!</p>`;
-                }
-                document.querySelector(`#p2DiceWrapper`).style.width = '50px';
-                document.querySelector(`#p2DiceWrapper`).innerHTML = '<img src="assets/svg/p2OneDice.svg" alt="Player 2 Dice" class="dice">';
+                document.querySelector(`#p${p}DiceWrapper`).style.width = '50px';
+                document.querySelector(`#p${p}DiceWrapper`).innerHTML = `<img src="assets/svg/p${p}Dice1.svg" alt="Player ${p} Dice" class="dice">`;
             }, 2000);
         }
     }
@@ -566,28 +394,41 @@ const playerTwoBattleRolled = (rolls, battlePlayer) => {
 const playerOneRoll = () => {
     if (turn === 1) {
         if (!battle) {
-            rolling = setInterval(playerOneRollingDice, 100);
+            rolling = setInterval(() => {
+                rollingDice(playerOne.nr);
+            }, 100);
             if (window.location.search.substring(1) === 'online') {
-                socket.emit('p1Roll', playerOne.sessionID);
+                let data = {
+                    nr: 1,
+                    sessionID: playerOne.sessionID
+                }
+                socket.emit('roll', data);
             }
-            setTimeout(function() {
+            setTimeout(() => {
                 clearInterval(rolling);
                 roll = _.random(1,6);
                 if (window.location.search.substring(1) === 'online') {
                     let data = {
+                        nr: 1,
                         sessionID: playerOne.sessionID,
                         roll: roll
                     }
-                    socket.emit('p1MoveRolled', data);
+                    socket.emit('moveRolled', data);
                 }
-                playerOneMoveRolled(roll);
+                playerMoveRolled(1, roll);
             }, 2500);
         } else {
-            rolling = setInterval(playerOneBattleRollingDice, 100);
+            rolling = setInterval(() => {
+                battleRollingDice(playerOne.nr)
+            }, 100);
             if (window.location.search.substring(1) === 'online') {
-                socket.emit('p1BattleRoll', playerOne.sessionID);
+                let data = {
+                    nr: 1,
+                    sessionID: playerOne.sessionID
+                }
+                socket.emit('battleRoll', data);
             }
-            setTimeout(function() {
+            setTimeout(() => {
                 clearInterval(rolling);
                 let roll1 = _.random(1,6);
                 let roll2 = _.random(1,6);
@@ -595,13 +436,13 @@ const playerOneRoll = () => {
                 let roll4 = _.random(1,6);
                 let roll5 = _.random(1,6);
                 let rolls = [roll1, roll2, roll3, roll4, roll5];
-                playerOneBattleRolled(rolls, playerOne);
+                battleRolled(rolls, playerOne);
                 if (window.location.search.substring(1) === 'online') {
                     let data = {
-                        sessionID: playerOne.sessionID,
+                        player: playerOne,
                         rolls: rolls
                     }
-                    socket.emit('p1BattleRolled', data);
+                    socket.emit('battleRolled', data);
                 }
             }, 2500);
         }
@@ -614,28 +455,41 @@ const playerOneRoll = () => {
 const playerTwoRoll = () => {
     if (turn === 2) {
         if (!battle) {
-            rolling = setInterval(playerTwoRollingDice, 100);
+            rolling = setInterval(() => {
+                rollingDice(playerTwo.nr);
+            }, 100);
             if (window.location.search.substring(1) === 'online') {
-                socket.emit('p2Roll', playerTwo.sessionID);
+                let data = {
+                    nr: 2,
+                    sessionID: playerTwo.sessionID
+                }
+                socket.emit('roll', data);
             }
-            setTimeout(function() {
+            setTimeout(() => {
                 clearInterval(rolling);
                 roll = _.random(1,6);
                 if (window.location.search.substring(1) === 'online') {
                     let data = {
+                        nr: 2,
                         sessionID: playerTwo.sessionID,
                         roll: roll
                     }
-                    socket.emit('p2MoveRolled', data);
+                    socket.emit('moveRolled', data);
                 }
-                playerTwoMoveRolled(roll);
+                playerMoveRolled(2, roll);
             }, 2500);
         } else {
-            rolling = setInterval(playerTwoBattleRollingDice, 100);
+            rolling = setInterval(() => {
+                battleRollingDice(playerTwo.nr);
+            }, 100);
             if (window.location.search.substring(1) === 'online') {
-                socket.emit('p2BattleRoll', playerTwo.sessionID);
+                let data = {
+                    nr: 2,
+                    sessionID: playerTwo.sessionID
+                }
+                socket.emit('battleRoll', data);
             }
-            setTimeout(function() {
+            setTimeout(() => {
                 clearInterval(rolling);
                 let roll1 = _.random(1,6);
                 let roll2 = _.random(1,6);
@@ -643,13 +497,13 @@ const playerTwoRoll = () => {
                 let roll4 = _.random(1,6);
                 let roll5 = _.random(1,6);
                 let rolls = [roll1, roll2, roll3, roll4, roll5];
-                playerTwoBattleRolled(rolls, playerTwo);
+                battleRolled(rolls, playerTwo);
                 if (window.location.search.substring(1) === 'online') {
                     let data = {
-                        sessionID: playerTwo.sessionID,
+                        player: playerTwo,
                         rolls: rolls
                     }
-                    socket.emit('p2BattleRolled', data);
+                    socket.emit('battleRolled', data);
                 }
             }, 2500);
         }
@@ -680,11 +534,11 @@ const battleCheck = (tile, battlePlayer, n) => {
 const battleFunction = (battlePlayer, p) => {
     let tile = tiles[battlePlayer.position - 1];
     document.querySelector(`#p${p}DiceWrapper`).style.width = '250px';
-    let dice = `assets/svg/p${p}OneDice.svg`;
+    let dice = `assets/svg/p${p}Dice1.svg`;
     document.querySelector(`#p${p}DiceWrapper`).innerHTML = `<img src="${dice}" alt="Player ${p} Dice" class="dice"><img src="${dice}" alt="Player ${p} Dice" class="dice"><img src="${dice}" alt="Player ${p} Dice" class="dice"><img src="${dice}" alt="Player ${p} Dice" class="dice"><img src="${dice}" alt="Player ${p} Dice" class="dice">`;
     const monster = new Image();
     monster.src = tile.imgUrl;
-    monster.onload = function() {
+    monster.onload = () => {
         let n = Math.round((canvas.height / 1.5) / 15);
         let width = 0;
         let height = 0;
@@ -693,26 +547,15 @@ const battleFunction = (battlePlayer, p) => {
         const drawBattleTile = () => {
             const battleTile = new Image();
             battleTile.src = 'assets/svg/battleTile.svg';
-            battleTile.onload = function() {
+            battleTile.onload = () => {
                 let width = canvas.width / 2;
                 let factor = width / battleTile.width;
                 let height = battleTile.height * factor;
                 let x = (canvas.width / 2) - (width / 2);
                 let y = (canvas.height / 2) - (height / 2);
                 ctx.drawImage(battleTile, x, y, width, height);
-                if (window.location.search.substring(1) === 'online') {
-                    let playerNick = '';
-                    if (player.nr === 1) {
-                        playerNick = playerTwo.nick;
-                    } else {
-                        playerNick = playerOne.nick;
-                    }
-                    document.querySelector('#gameOverlay').style.display = 'block';
-                    document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>You meet ${tile.opponent}. Get ready to battle.</p><p>${p === player.nr ? 'You' : playerNick} need to roll ${tile.dices} dice with ${tile.roll} or higher roll.</p>`;
-                } else {
-                    document.querySelector('#gameOverlay').style.display = 'block';
-                    document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>You meet ${tile.opponent}. Get ready to battle.</p><p>You need to roll ${tile.dices} dice with ${tile.roll} or higher roll.</p>`;
-                }
+                document.querySelector('#gameOverlay').style.display = 'block';
+                document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${battlePlayer.nick} meet ${tile.opponent}. Get ready to battle.</p><p>${battlePlayer.nick} need to roll ${tile.dices} dice with ${tile.roll} or higher roll.</p>`;
 
             }
         }
