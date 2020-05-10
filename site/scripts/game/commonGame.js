@@ -323,7 +323,7 @@ const battleRolled = (rolls, battlePlayer) => {
         loss.onload = () => {
             let width = canvas.width / 2;
             let factor = width / loss.width;
-            let height = loss.width * factor;
+            let height = loss.height * factor;
             let x = (canvas.width / 2) - (width / 2);
             let y = (canvas.height / 2) - (height / 2);
             ctx.drawImage(loss, x, y, width, height);
