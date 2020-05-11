@@ -35,7 +35,7 @@ document.querySelector('#canvasBg').style.height = `${height}px`;
 document.querySelector('#canvasBg').style.width = `${width}px`;
 canvas.width = width;
 canvas.height = height;
-const ctx = canvas.getContext('2d');
+// const ctx = canvas.getContext('2d');
 const playerOneToken = new Image();
 const playerTwoToken = new Image();
 let tokenWidth = 0;
@@ -179,23 +179,25 @@ const finishInitBoard = coords => {
     goalY = canvas.height * 0.23;
     startX = canvas.width * 0.6;
     startY = canvas.height - ((canvas.height * 0.12) + 5);
-    playerOneToken.src = 'assets/svg/player1.svg';
+    playerOneToken.src = 'assets/imgs/player1.png';
     playerOneToken.onload = () => {
-        playerTwoToken.src = 'assets/svg/player2.svg';
+        playerTwoToken.src = 'assets/imgs/player2.png';
         playerTwoToken.onload = () => {
-            tokenWidth = canvas.width * 0.05;
+            tokenWidth = canvas.width * 0.023;
             let tokenFactor = tokenWidth / playerTwoToken.width;
             tokenHeight = playerTwoToken.height * tokenFactor;
-            playerOne['coords'] = [{x: (startX + (tokenWidth / 2)), y: (startY + tokenHeight)}];
-            playerTwo['coords'] = [{x: (startX + tokenWidth), y: (startY + tokenHeight)}];
+            playerOne['coords'] = [{x: (startX + (tokenWidth * 1.5)), y: (startY + (tokenHeight * 1.7))}];
+            playerTwo['coords'] = [{x: (startX + (tokenWidth * 2.7)), y: (startY + (tokenHeight * 1.7))}];
             for (let i=0;i < tiles.length;i++) {
                 tiles[i].x = canvas.width * coords[i].x;
                 tiles[i].y = canvas.height * coords[i].y;
-                playerOne.coords.push({x: tiles[i].x, y: (tiles[i].y + (tokenHeight / 1.9))});
-                playerTwo.coords.push({x: tiles[i].x, y: (tiles[i].y - (tokenHeight / 7))});
+                playerOne.coords.push({x: (tiles[i].x + (tokenWidth / 1.75)), y: (tiles[i].y + (tokenHeight * 1.2))});
+                playerTwo.coords.push({x: (tiles[i].x + (tokenWidth / 1.75)), y: tiles[i].y});
             }
-            playerOne.coords.push({x: (goalX + (tokenWidth / 2)), y: (goalY + tokenHeight)});
-            playerTwo.coords.push({x: (goalX + tokenWidth), y: (goalY + tokenHeight)});
+            playerOne.coords.push({x: (goalX + (tokenWidth * 1.5)), y: (goalY + (tokenHeight * 1.7))});
+            playerTwo.coords.push({x: (goalX + (tokenWidth * 2.7)), y: (goalY + (tokenHeight * 1.7))});
+            const newCanvas = document.querySelector('#canvas');
+            const ctx = newCanvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(playerOneToken, playerOne.coords[0].x, playerOne.coords[0].y, tokenWidth, tokenHeight);
             ctx.drawImage(playerTwoToken, playerTwo.coords[0].x, playerTwo.coords[0].y, tokenWidth, tokenHeight);
@@ -214,6 +216,8 @@ const finishInitBoard = coords => {
 }
 
 const move = (positionOne, positionTwo, p) => {
+    const newCanvas = document.querySelector('#canvas');
+    const ctx = newCanvas.getContext('2d');
     if (p === 0) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(playerOneToken, playerOne.coords[positionOne].x, playerOne.coords[positionOne].y, tokenWidth, tokenHeight);
@@ -310,6 +314,8 @@ const playerMoveRolled = (p, roll) => {
 }
 
 const battleRolled = (rolls, battlePlayer) => {
+    const newCanvas = document.querySelector('#canvas');
+    const ctx = newCanvas.getContext('2d');
     let p = battlePlayer.nr;
     let tile = tiles[battlePlayer.position - 1];
     document.querySelector(`#p${p}DiceWrapper`).innerHTML = `<img src="assets/svg/p${p}Dice${rolls[0]}.svg" alt="Player ${p} Dice" class="dice"><img src="assets/svg/p${p}Dice${rolls[1]}.svg" alt="Player ${p} Dice" class="dice"><img src="assets/svg/p${p}Dice${rolls[2]}.svg" alt="Player ${p} Dice" class="dice"><img src="assets/svg/p${p}Dice${rolls[3]}.svg" alt="Player ${p} Dice" class="dice"><img src="assets/svg/p${p}Dice${rolls[4]}.svg" alt="Player ${p} Dice" class="dice">`;
@@ -319,9 +325,9 @@ const battleRolled = (rolls, battlePlayer) => {
     if (hit.length < tile.dices) {
         move(playerOne.position, playerTwo.position, 0);
         const loss = new Image();
-        loss.src = 'assets/svg/lossTile.svg';
+        loss.src = 'assets/imgs/lossTile.png';
         loss.onload = () => {
-            let width = canvas.width / 2;
+            let width = canvas.width / 2.5;
             let factor = width / loss.width;
             let height = loss.height * factor;
             let x = (canvas.width / 2) - (width / 2);
@@ -361,9 +367,9 @@ const battleRolled = (rolls, battlePlayer) => {
     } else {
         move(playerOne.position, playerTwo.position, 0);
         const win = new Image();
-        win.src = 'assets/svg/winTile.svg';
+        win.src = 'assets/imgs/winTile.png';
         win.onload = () => {
-            let width = canvas.width / 2;
+            let width = canvas.width / 2.5;
             let factor = width / win.width;
             let height = win.height * factor;
             let x = (canvas.width / 2) - (width / 2);
@@ -532,6 +538,8 @@ const battleCheck = (tile, battlePlayer, n) => {
 }
 
 const battleFunction = (battlePlayer, p) => {
+    const newCanvas = document.querySelector('#canvas');
+    const ctx = newCanvas.getContext('2d');
     let tile = tiles[battlePlayer.position - 1];
     document.querySelector(`#p${p}DiceWrapper`).style.width = '250px';
     let dice = `assets/svg/p${p}Dice1.svg`;
@@ -546,9 +554,9 @@ const battleFunction = (battlePlayer, p) => {
         let steps = 0;
         const drawBattleTile = () => {
             const battleTile = new Image();
-            battleTile.src = 'assets/svg/battleTile.svg';
+            battleTile.src = 'assets/imgs/battleTile.png';
             battleTile.onload = () => {
-                let width = canvas.width / 2;
+                let width = canvas.width / 2.5;
                 let factor = width / battleTile.width;
                 let height = battleTile.height * factor;
                 let x = (canvas.width / 2) - (width / 2);
@@ -564,24 +572,8 @@ const battleFunction = (battlePlayer, p) => {
                 height += 15;
                 width += 15 / factor;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                let tokenOneWidth = canvas.width * 0.05;
-                let tokenOneFactor = tokenOneWidth / playerOneToken.width;
-                let tokenOneHeight = playerOneToken.height * tokenOneFactor;
-                if (playerOne.position === 0) {
-                    ctx.drawImage(playerOneToken, (startX + (tokenOneWidth / 2)), (startY + tokenOneHeight), tokenOneWidth, tokenOneHeight);
-                } else {
-                    let indexOne = playerOne.position - 1;
-                    ctx.drawImage(playerOneToken, tiles[indexOne].x, (tiles[indexOne].y + (tokenOneHeight / 1.9)), tokenOneWidth, tokenOneHeight);
-                }
-                let tokenTwoWidth = canvas.width * 0.05;
-                let tokenTwoFactor = tokenTwoWidth / playerTwoToken.width;
-                let tokenTwoHeight = playerTwoToken.height * tokenTwoFactor;
-                if (playerTwo.position === 0) {
-                    ctx.drawImage(playerTwoToken, (startX + (tokenTwoWidth)), (startY + tokenTwoHeight), tokenTwoWidth, tokenTwoHeight);
-                } else {
-                    let indexTwo = playerTwo.position - 1;
-                    ctx.drawImage(playerTwoToken, tiles[indexTwo].x, (tiles[indexTwo].y - (tokenTwoHeight / 7)), tokenTwoWidth, tokenTwoHeight);
-                }
+                ctx.drawImage(playerOneToken, playerOne.coords[playerOne.position].x, playerOne.coords[playerOne.position].y, tokenWidth, tokenHeight);
+                ctx.drawImage(playerTwoToken, playerTwo.coords[playerTwo.position].x, playerTwo.coords[playerTwo.position].y, tokenWidth, tokenHeight);
                 ctx.drawImage(monster, (canvas.width - width), (canvas.height - height), width, height);
                 steps++;
                 window.requestAnimationFrame(drawMonster);
