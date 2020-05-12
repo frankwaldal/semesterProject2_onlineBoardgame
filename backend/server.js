@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+const PORT = 8080;
 
 app.use(express.static('../site'));
 
@@ -64,6 +65,6 @@ io.on('connection', socket => {
     });
 });
 
-http.listen(8080, () => {
-    console.log('Running on PORT 8080');
+http.listen(PORT, () => {
+    console.log(`Running on PORT ${PORT}`);
 });

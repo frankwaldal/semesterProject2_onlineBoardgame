@@ -55,7 +55,7 @@ socket.on('battleRoll', data => {
     }
 });
 socket.on('battleRolled', data => {
-    if (data.nr !== player.nr) {
+    if (data.player.nr !== player.nr) {
         clearInterval(rolling);
         battleRolled(data.rolls, data.player);
     }
