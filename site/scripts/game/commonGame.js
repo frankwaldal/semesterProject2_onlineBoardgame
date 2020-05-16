@@ -19,6 +19,7 @@ let oldPositions = {
     playerTwo: 0
 }
 let rolling;
+let rollCheck = false;
 
 const canvas = document.querySelector('#canvas');
 const idealWidth = 1280;
@@ -50,7 +51,7 @@ const popTopBar = () => {
 
 const decideStarter = selecter => {
     document.querySelector('#gameOverlay').style.display = 'block';
-    document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>Roll for who to start.</p><p>${playerOne.nick} roll first.</p>`;
+    document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>Roll for who to start.</p><p>${playerOne.nick} rolls first.</p>`;
     if (selecter === 'p1') {
         document.querySelector('#playerOne').addEventListener('click', decideStarterTwo);
     }
@@ -88,7 +89,7 @@ const switchRollDecider = roll => {
     document.querySelector('#p1DiceWrapper').innerHTML = `<img src="${dices[roll - 1]}" alt="Player 1 Dice" class="dice">`;
     p1StartRoll = roll;
     document.querySelector('#gameOverlay').style.display = 'block';
-    document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>Roll for who to start.</p><p>${playerTwo.nick} roll second.</p>`;
+    document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>Roll for who to start.</p><p>${playerTwo.nick} rolls second.</p>`;
     if (window.location.search.substring(1) === 'local' || player.nr === 2) {
         document.querySelector('#playerTwo').addEventListener('click', decideStarterThree);
     }
@@ -127,6 +128,7 @@ const rollDecided = roll => {
     p2StartRoll = roll;
     if (p1StartRoll > p2StartRoll) {
         turn = 1;
+        document.querySelector('#playerOneWrapper').style.border = '2px solid #45911c';
         document.querySelector('#gameOverlay').style.display = 'block';
         document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${playerOne.nick} starts.</p>`;
         if (window.location.search.substring(1) === 'local' || player.nr === 1) {
@@ -134,6 +136,7 @@ const rollDecided = roll => {
         }
     } else if (p2StartRoll > p1StartRoll) {
         turn = 2;
+        document.querySelector('#playerTwoWrapper').style.border = '2px solid #b82525';
         document.querySelector('#gameOverlay').style.display = 'block';
         document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${playerTwo.nick} starts.</p>`;
         if (window.location.search.substring(1) === 'local' || player.nr === 1) {
@@ -141,7 +144,7 @@ const rollDecided = roll => {
         }
     } else if (p1StartRoll === p2StartRoll) {
         document.querySelector('#gameOverlay').style.display = 'block';
-        document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>You rolled the same, try again.</p><p>${playerOne.nick} roll first.</p>`;
+        document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>You rolled the same, try again.</p><p>${playerOne.nick} rolls first.</p>`;
         if (window.location.search.substring(1) === 'local' || player.nr === 1) {
             document.querySelector('#playerOne').addEventListener('click', decideStarterTwo);
         }
@@ -196,6 +199,10 @@ const finishInitBoard = coords => {
             }
             playerOne.coords.push({x: (goalX + (tokenWidth / 2)), y: (goalY + tokenHeight)});
             playerTwo.coords.push({x: (goalX + tokenWidth), y: (goalY + tokenHeight)});
+            /*
+                When connecting to socket.io the canvas and context looses its reference when defined globally, due to this for the canvas drawing to work with online play, I needed to use the following work-around. Redefine the canvas and context for each scope that need to draw on the canvas.
+                I tested with teachers at Noroff to locate the root of this issue, but neither could find the root cause of this.
+            */
             const newCanvas = document.querySelector('#canvas');
             const ctx = newCanvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -216,6 +223,10 @@ const finishInitBoard = coords => {
 }
 
 const move = (positionOne, positionTwo, p) => {
+    /*
+        When connecting to socket.io the canvas and context looses its reference when defined globally, due to this for the canvas drawing to work with online play, I needed to use the following work-around. Redefine the canvas and context for each scope that need to draw on the canvas.
+        I tested with teachers at Noroff to locate the root of this issue, but neither could find the root cause of this.
+    */
     const newCanvas = document.querySelector('#canvas');
     const ctx = newCanvas.getContext('2d');
     if (p === 0) {
@@ -280,12 +291,8 @@ const rollingDice = p => {
 }
 
 const battleRollingDice = p => {
-    let roll1 = _.random(1,6);
-    let roll2 = _.random(1,6);
-    let roll3 = _.random(1,6);
-    let roll4 = _.random(1,6);
-    let roll5 = _.random(1,6);
-    document.querySelector(`#p${p}DiceWrapper`).innerHTML = `<img src="assets/svg/p${p}Dice${roll1}.svg" alt="Player ${p} Dice" class="dice"><img src="assets/svg/p${p}Dice${roll2}.svg" alt="Player ${p} Dice" class="dice"><img src="assets/svg/p${p}Dice${roll3}.svg" alt="Player ${p} Dice" class="dice"><img src="assets/svg/p${p}Dice${roll4}.svg" alt="Player ${p} Dice" class="dice"><img src="assets/svg/p${p}Dice${roll5}.svg" alt="Player ${p} Dice" class="dice">`;
+    let rolls = [_.random(1,6), _.random(1,6), _.random(1,6), _.random(1,6), _.random(1,6)];
+    document.querySelector(`#p${p}DiceWrapper`).innerHTML = `<img src="assets/svg/p${p}Dice${rolls[0]}.svg" alt="Player ${p} Dice" class="dice"><img src="assets/svg/p${p}Dice${rolls[1]}.svg" alt="Player ${p} Dice" class="dice"><img src="assets/svg/p${p}Dice${rolls[2]}.svg" alt="Player ${p} Dice" class="dice"><img src="assets/svg/p${p}Dice${rolls[3]}.svg" alt="Player ${p} Dice" class="dice"><img src="assets/svg/p${p}Dice${rolls[4]}.svg" alt="Player ${p} Dice" class="dice">`;
 }
 
 const playerMoveRolled = (p, roll) => {
@@ -314,6 +321,10 @@ const playerMoveRolled = (p, roll) => {
 }
 
 const battleRolled = (rolls, battlePlayer) => {
+    /*
+        When connecting to socket.io the canvas and context looses its reference when defined globally, due to this for the canvas drawing to work with online play, I needed to use the following work-around. Redefine the canvas and context for each scope that need to draw on the canvas.
+        I tested with teachers at Noroff to locate the root of this issue, but neither could find the root cause of this.
+    */
     const newCanvas = document.querySelector('#canvas');
     const ctx = newCanvas.getContext('2d');
     let p = battlePlayer.nr;
@@ -334,7 +345,7 @@ const battleRolled = (rolls, battlePlayer) => {
             let y = (canvas.height / 2) - (height / 2);
             ctx.drawImage(loss, x, y, width, height);
             document.querySelector('#gameOverlay').style.display = 'block';
-            document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${battlePlayer.nick} lost the battle.</p><p>${battlePlayer.nick} move back 2 tiles.</p>`;
+            document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${battlePlayer.nick} lost the battle.</p><p>${battlePlayer.nick} moves back 2 tiles.</p>`;
             battle = false;
             let n = 0;
             if (battlePlayer.position === 1) {
@@ -359,15 +370,19 @@ const battleRolled = (rolls, battlePlayer) => {
                 if (roll !== 6) {
                     if (battlePlayer.nr === 1) {
                         turn = 2;
+                        document.querySelector('#playerTwoWrapper').style.border = '2px solid #b82525';
+                        document.querySelector('#playerOneWrapper').style.border = 'none';
                     } else {
                         turn = 1;
+                        document.querySelector('#playerTwoWrapper').style.border = 'none';
+                        document.querySelector('#playerOneWrapper').style.border = '2px solid #45911c';
                     }
                 } else {
                     document.querySelector('#gameOverlay').style.display = 'block';
                     document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${battlePlayer.nick} rolled a 6, and takes another turn!</p>`;
                 }
                 document.querySelector(`#p${p}DiceWrapper`).style.width = '50px';
-                document.querySelector(`#p${p}DiceWrapper`).innerHTML = `<img src="assets/svg/p${p}Dice1.svg" alt="Player ${p} Dice" class="dice">`;
+                document.querySelector(`#p${p}DiceWrapper`).innerHTML = `<img src="assets/svg/p${p}Dice${roll}.svg" alt="Player ${p} Dice" class="dice">`;
                 let vol = 20;
                 const fadeOut = () => {
                     if (vol > 0) {
@@ -377,6 +392,7 @@ const battleRolled = (rolls, battlePlayer) => {
                     } else {
                         audio.src = '';
                         document.querySelector('#mute').parentNode.removeChild(document.querySelector('#mute'));
+                        rollCheck = false;
                     }
                 }
                 setTimeout(fadeOut, 10);
@@ -401,15 +417,19 @@ const battleRolled = (rolls, battlePlayer) => {
                 if (roll !== 6) {
                     if (battlePlayer.nr === 1) {
                         turn = 2;
+                        document.querySelector('#playerTwoWrapper').style.border = '2px solid #b82525';
+                        document.querySelector('#playerOneWrapper').style.border = 'none';
                     } else {
                         turn = 1;
+                        document.querySelector('#playerOneWrapper').style.border = '2px solid #45911c';
+                        document.querySelector('#playerTwoWrapper').style.border = 'none';
                     }
                 } else {
                     document.querySelector('#gameOverlay').style.display = 'block';
                     document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${battlePlayer.nick} rolled a 6, and takes another turn!</p>`;
                 }
                 document.querySelector(`#p${p}DiceWrapper`).style.width = '50px';
-                document.querySelector(`#p${p}DiceWrapper`).innerHTML = `<img src="assets/svg/p${p}Dice1.svg" alt="Player ${p} Dice" class="dice">`;
+                document.querySelector(`#p${p}DiceWrapper`).innerHTML = `<img src="assets/svg/p${p}Dice${roll}.svg" alt="Player ${p} Dice" class="dice">`;
                 let vol = audio.volume * 100;
                 const fadeOut = () => {
                     if (vol > 0) {
@@ -419,6 +439,7 @@ const battleRolled = (rolls, battlePlayer) => {
                     } else {
                         audio.src = '';
                         document.querySelector('#mute').parentNode.removeChild(document.querySelector('#mute'));
+                        rollCheck = false;
                     }
                 }
                 setTimeout(fadeOut, 25);
@@ -428,128 +449,125 @@ const battleRolled = (rolls, battlePlayer) => {
 }
 
 const playerOneRoll = () => {
-    if (turn === 1) {
-        if (!battle) {
-            rolling = setInterval(() => {
-                rollingDice(playerOne.nr);
-            }, 100);
-            if (window.location.search.substring(1) === 'online') {
-                let data = {
-                    nr: 1,
-                    sessionID: playerOne.sessionID
-                }
-                socket.emit('roll', data);
-            }
-            setTimeout(() => {
-                clearInterval(rolling);
-                roll = _.random(1,6);
+    if (!rollCheck) {
+        if (turn === 1) {
+            rollCheck = true;
+            if (!battle) {
+                rolling = setInterval(() => {
+                    rollingDice(playerOne.nr);
+                }, 100);
                 if (window.location.search.substring(1) === 'online') {
                     let data = {
                         nr: 1,
-                        sessionID: playerOne.sessionID,
-                        roll: roll
+                        sessionID: playerOne.sessionID
                     }
-                    socket.emit('moveRolled', data);
+                    socket.emit('roll', data);
                 }
-                playerMoveRolled(1, roll);
-            }, 2500);
-        } else {
-            rolling = setInterval(() => {
-                battleRollingDice(playerOne.nr)
-            }, 100);
-            if (window.location.search.substring(1) === 'online') {
-                let data = {
-                    nr: 1,
-                    sessionID: playerOne.sessionID
-                }
-                socket.emit('battleRoll', data);
-            }
-            setTimeout(() => {
-                clearInterval(rolling);
-                let roll1 = _.random(1,6);
-                let roll2 = _.random(1,6);
-                let roll3 = _.random(1,6);
-                let roll4 = _.random(1,6);
-                let roll5 = _.random(1,6);
-                let rolls = [roll1, roll2, roll3, roll4, roll5];
-                battleRolled(rolls, playerOne);
+                setTimeout(() => {
+                    clearInterval(rolling);
+                    roll = _.random(1,6);
+                    if (window.location.search.substring(1) === 'online') {
+                        let data = {
+                            nr: 1,
+                            sessionID: playerOne.sessionID,
+                            roll: roll
+                        }
+                        socket.emit('moveRolled', data);
+                    }
+                    playerMoveRolled(1, roll);
+                }, 2500);
+            } else {
+                rolling = setInterval(() => {
+                    battleRollingDice(playerOne.nr)
+                }, 100);
                 if (window.location.search.substring(1) === 'online') {
                     let data = {
-                        player: playerOne,
-                        rolls: rolls
+                        nr: 1,
+                        sessionID: playerOne.sessionID
                     }
-                    socket.emit('battleRolled', data);
+                    socket.emit('battleRoll', data);
                 }
-            }, 2500);
+                setTimeout(() => {
+                    clearInterval(rolling);
+                    let rolls = [_.random(1,6), _.random(1,6), _.random(1,6), _.random(1,6), _.random(1,6)];
+                    battleRolled(rolls, playerOne);
+                    if (window.location.search.substring(1) === 'online') {
+                        let data = {
+                            player: playerOne,
+                            rolls: rolls
+                        }
+                        socket.emit('battleRolled', data);
+                    }
+                }, 2500);
+            }
+        } else {
+            document.querySelector('#gameOverlay').style.display = 'block';
+            document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${playerTwo.nick}'s turn!</p>`;
         }
-    } else {
-        document.querySelector('#gameOverlay').style.display = 'block';
-        document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${playerTwo.nick}'s turn!</p>`;
     }
 }
 
 const playerTwoRoll = () => {
-    if (turn === 2) {
-        if (!battle) {
-            rolling = setInterval(() => {
-                rollingDice(playerTwo.nr);
-            }, 100);
-            if (window.location.search.substring(1) === 'online') {
-                let data = {
-                    nr: 2,
-                    sessionID: playerTwo.sessionID
-                }
-                socket.emit('roll', data);
-            }
-            setTimeout(() => {
-                clearInterval(rolling);
-                roll = _.random(1,6);
+    if (!rollCheck) {
+        if (turn === 2) {
+            rollCheck = true;
+            if (!battle) {
+                rolling = setInterval(() => {
+                    rollingDice(playerTwo.nr);
+                }, 100);
                 if (window.location.search.substring(1) === 'online') {
                     let data = {
                         nr: 2,
-                        sessionID: playerTwo.sessionID,
-                        roll: roll
+                        sessionID: playerTwo.sessionID
                     }
-                    socket.emit('moveRolled', data);
+                    socket.emit('roll', data);
                 }
-                playerMoveRolled(2, roll);
-            }, 2500);
-        } else {
-            rolling = setInterval(() => {
-                battleRollingDice(playerTwo.nr);
-            }, 100);
-            if (window.location.search.substring(1) === 'online') {
-                let data = {
-                    nr: 2,
-                    sessionID: playerTwo.sessionID
-                }
-                socket.emit('battleRoll', data);
-            }
-            setTimeout(() => {
-                clearInterval(rolling);
-                let roll1 = _.random(1,6);
-                let roll2 = _.random(1,6);
-                let roll3 = _.random(1,6);
-                let roll4 = _.random(1,6);
-                let roll5 = _.random(1,6);
-                let rolls = [roll1, roll2, roll3, roll4, roll5];
-                battleRolled(rolls, playerTwo);
+                setTimeout(() => {
+                    clearInterval(rolling);
+                    roll = _.random(1,6);
+                    if (window.location.search.substring(1) === 'online') {
+                        let data = {
+                            nr: 2,
+                            sessionID: playerTwo.sessionID,
+                            roll: roll
+                        }
+                        socket.emit('moveRolled', data);
+                    }
+                    playerMoveRolled(2, roll);
+                }, 2500);
+            } else {
+                rolling = setInterval(() => {
+                    battleRollingDice(playerTwo.nr);
+                }, 100);
                 if (window.location.search.substring(1) === 'online') {
                     let data = {
-                        player: playerTwo,
-                        rolls: rolls
+                        nr: 2,
+                        sessionID: playerTwo.sessionID
                     }
-                    socket.emit('battleRolled', data);
+                    socket.emit('battleRoll', data);
                 }
-            }, 2500);
+                setTimeout(() => {
+                    clearInterval(rolling);
+                    let rolls = [_.random(1,6), _.random(1,6), _.random(1,6), _.random(1,6), _.random(1,6)];
+                    battleRolled(rolls, playerTwo);
+                    if (window.location.search.substring(1) === 'online') {
+                        let data = {
+                            player: playerTwo,
+                            rolls: rolls
+                        }
+                        socket.emit('battleRolled', data);
+                    }
+                }, 2500);
+            }
+        } else {
+            document.querySelector('#gameOverlay').style.display = 'block';
+            document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${playerOne.nick}'s turn!</p>`;
         }
-    } else {
-        document.querySelector('#gameOverlay').style.display = 'block';
-        document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${playerOne.nick}'s turn!</p>`;
     }
 }
 
 const battleCheck = (tile, battlePlayer, n) => {
+    rollCheck = false;
     if (tile.battle) {
         battle = true;
         battleFunction(battlePlayer, n);
@@ -557,8 +575,12 @@ const battleCheck = (tile, battlePlayer, n) => {
         if (roll !== 6) {
             if (n === 1) {
                 turn = 2;
+                document.querySelector('#playerTwoWrapper').style.border = '2px solid #b82525';
+                document.querySelector('#playerOneWrapper').style.border = 'none';
             } else {
                 turn = 1;
+                document.querySelector('#playerOneWrapper').style.border = '2px solid #45911c';
+                document.querySelector('#playerTwoWrapper').style.border = 'none';
             }
         } else {
             document.querySelector('#gameOverlay').style.display = 'block';
@@ -586,6 +608,10 @@ const battleFunction = (battlePlayer, p) => {
     muteButton.setAttribute('onclick', 'mute();');
     muteButton.innerHTML = 'Mute';
     document.querySelector('body').appendChild(muteButton);
+    /*
+        When connecting to socket.io the canvas and context looses its reference when defined globally, due to this for the canvas drawing to work with online play, I needed to use the following work-around. Redefine the canvas and context for each scope that need to draw on the canvas.
+        I tested with teachers at Noroff to locate the root of this issue, but neither could find the root cause of this.
+    */
     const newCanvas = document.querySelector('#canvas');
     const ctx = newCanvas.getContext('2d');
     let tile = tiles[battlePlayer.position - 1];
@@ -611,7 +637,7 @@ const battleFunction = (battlePlayer, p) => {
                 let y = (canvas.height / 2) - (height / 2);
                 ctx.drawImage(battleTile, x, y, width, height);
                 document.querySelector('#gameOverlay').style.display = 'block';
-                document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${battlePlayer.nick} meet ${tile.opponent}. Get ready to battle.</p><p>${battlePlayer.nick} need to roll ${tile.dices} dice with ${tile.roll} or higher roll.</p>`;
+                document.querySelector('#gameOverlay').innerHTML = `<div class="clearfix"><button id="closeOverlay" onclick="closeOverlay();">Close</button></div><p>${battlePlayer.nick} meets ${tile.opponent}. Get ready to battle.</p><p>${battlePlayer.nick} needs to roll ${tile.dices} dice with ${tile.roll} or higher roll.</p>`;
 
             }
         }
@@ -644,6 +670,7 @@ const winGame = winner => {
         localStorage.removeItem('p2');
         window.location.href = 'finish.html?local';
     } else {
+        localStorage.setItem('chatLog', JSON.stringify(messages));
         window.location.href = 'finish.html?online';
     }
 }

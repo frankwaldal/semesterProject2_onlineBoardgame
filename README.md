@@ -15,3 +15,5 @@ Do the following in commandline:
 - Navigate to the `backend` folder.
 - Run: `npm install`.
 - Run: `node server.js` or `nodemon server.js`.
+
+To access the game, go to `http://localhost:8080` in your browser. (Change localhost with host/ip if accessing from different pc, and 8080 with choses port if changed.)

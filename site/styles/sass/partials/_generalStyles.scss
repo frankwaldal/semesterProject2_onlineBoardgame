@@ -53,6 +53,9 @@ button {
 .extraMargin {
     margin: 20px;
 }
+.flex {
+    display: flex;
+}
 .column {
     flex-direction: column;
     margin-top: 20px;
@@ -95,9 +98,7 @@ button {
         }
         & .message, .messageRightPush {
             width: 80%;
-            display: flex;
             margin-top: 10px;
-            flex-direction: column;
         }
         & .message {
             background: darken($lightBrown, 20%);
@@ -107,7 +108,6 @@ button {
             background: darken($lightBrown, 10%);
         }
         & .headingMessage {
-            display: flex;
             justify-content: space-between;
             margin: 5px 10px;
             & p {
@@ -130,7 +130,6 @@ button {
     }
     .sendBox {
         margin-top: auto;
-        display: flex;
         align-items: flex-end;
     }
 }
@@ -151,4 +150,9 @@ footer {
     content: '';
     clear: both;
     display: table;
+}
+@media screen and (max-width: 700px) {
+    #chat {
+        max-width: calc(100vw - 20px);
+    }
 }

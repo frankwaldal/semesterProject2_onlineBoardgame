@@ -1,6 +1,4 @@
 .collapseSegment {
-    display: flex;
-    flex-direction: column;
     justify-content: center;
     & .segment {
         max-width: 800px;
@@ -27,6 +25,9 @@
             & li {
                 margin: 10px;
             }
+        }
+        & p {
+            margin: 10px;
         }
     }
     & .icon {

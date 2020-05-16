@@ -7,24 +7,24 @@
         <link rel="stylesheet" href="styles/css/styles.css">
     </head>
     <body>
-        <header>
+        <header class="flex">
             <img src="assets/svg/logo.svg" alt="Logo" class="logo">
             <h1>Climb to the Mist Mountain - an online boardgame</h1>
         </header>
-        <main>
-            <div class="playSelection">
+        <main class="flex">
+            <div class="playSelection flex column">
                 <h2>Local Play</h2>
                 <p>Play against a friend at the same location, in the same browser.</p>
                 <button id="localPlay">Pick Characters</button>
             </div>
-            <div class="playSelection">
+            <div class="playSelection flex column">
                 <h2>Online Play</h2>
                 <p>Play online against other players, in seperate browsers.</p>
                 <button id="onlinePlay">Find Game</button>
             </div>
-            <div class="fullWidth column">
+            <div class="fullWidth flex column">
                 <h1>About this game</h1>
-                <div class="collapseSegment">
+                <div class="collapseSegment flex column">
                     <div class="segment closed" id="goal">
                         <h2 id="goalHeading">Goal of the game<img src="assets/svg/arrow.svg" alt="Expand Arrow" class="icon"></h2>
                         <p class="centerText">The goal of the game is to reach the top of the Mist Mountain first.</p>
@@ -54,7 +54,6 @@
         </footer>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" integrity="sha256-bQmrZe4yPnQrLTY+1gYylfNMBuGfnT/HKsCGX+9Xuqo=" crossorigin="anonymous"></script>
         <script src="scripts/lodash.min.js" charset="utf-8"></script>
-        <script src="scripts/globalVarsFuncs.js" charset="utf-8"></script>
         <script src="scripts/index/aboutCommonSetup.js" charset="utf-8"></script>
         <script src="scripts/index/setupLocal.js" charset="utf-8"></script>
         <script src="scripts/index/setupOnline.js" charset="utf-8"></script>

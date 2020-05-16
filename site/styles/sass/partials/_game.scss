@@ -1,16 +1,13 @@
 .topBar {
     height: 70px;
-    display: flex;
     & .playerWrapper {
         width: 50%;
-        display: flex;
         align-items: center;
         & .playerToken {
             margin: 0 10px;
             height: 70px;
             width: 70px;
             position: fixed;
-            display: flex;
             justify-content: center;
             align-items: center;
             & img {
@@ -39,6 +36,7 @@
         }
         & .playerInfo {
             margin: 0 10px;
+            max-width: 200px;
             & p {
                 margin: 10px;
             }
@@ -61,7 +59,6 @@
     }
 }
 .canvasWrapper {
-    display: flex;
     justify-content: center;
 }
 #canvasBg {

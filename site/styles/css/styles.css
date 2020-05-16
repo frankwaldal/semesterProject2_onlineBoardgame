@@ -57,6 +57,10 @@ button:active {
   margin: 20px;
 }
 
+.flex {
+  display: flex;
+}
+
 .column {
   flex-direction: column;
   margin-top: 20px;
@@ -103,9 +107,7 @@ button:active {
 }
 #chat #messages .message, #chat #messages .messageRightPush {
   width: 80%;
-  display: flex;
   margin-top: 10px;
-  flex-direction: column;
 }
 #chat #messages .message {
   background: #733f21;
@@ -115,7 +117,6 @@ button:active {
   background: #9a552d;
 }
 #chat #messages .headingMessage {
-  display: flex;
   justify-content: space-between;
   margin: 5px 10px;
 }
@@ -137,7 +138,6 @@ button:active {
 }
 #chat .sendBox {
   margin-top: auto;
-  display: flex;
   align-items: flex-end;
 }
 
@@ -163,8 +163,12 @@ footer {
   display: table;
 }
 
+@media screen and (max-width: 700px) {
+  #chat {
+    max-width: calc(100vw - 20px);
+  }
+}
 header {
-  display: flex;
   align-items: center;
 }
 header .logo {
@@ -177,7 +181,6 @@ header h1 {
 }
 
 main {
-  display: flex;
   align-items: center;
   flex-wrap: wrap;
 }
@@ -189,31 +192,32 @@ main h2 {
 main #error {
   color: #b82525;
   font-size: 20px;
+  margin: 10px;
 }
 main .center {
   margin: 10px auto;
 }
 main .fullWidth {
   width: 100%;
-  display: flex;
   justify-content: center;
   align-items: center;
 }
 main .playSelection {
-  margin-top: 50px;
   margin-bottom: auto;
   width: 50%;
-  display: flex;
-  flex-direction: column;
   align-items: center;
 }
 main .playSelection img {
   margin: 20px;
   max-width: calc(50vw - 80px);
+  max-height: 40vh;
 }
 main .playSelection p {
   text-align: center;
   letter-spacing: 0.1em;
+}
+main .playSelection .inputs {
+  margin: 0 20px;
 }
 main label {
   font-size: 20px;
@@ -236,11 +240,34 @@ main input {
   background: #26150b;
   color: #ffe467;
   padding: 10px;
+  max-width: 20vw;
 }
 
+@media screen and (max-width: 800px) {
+  main .playSelection {
+    width: calc(100vw - 20px);
+    padding: 10px;
+  }
+  main .playSelection img {
+    max-width: calc(100vw - 40px);
+  }
+}
+@media screen and (max-width: 700px) {
+  header .logo {
+    height: 100px;
+  }
+  header h1 {
+    font-size: 32px;
+  }
+
+  main .mobileColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+}
 .collapseSegment {
-  display: flex;
-  flex-direction: column;
   justify-content: center;
 }
 .collapseSegment .segment {
@@ -275,6 +302,9 @@ main input {
 .collapseSegment .segment ul li {
   margin: 10px;
 }
+.collapseSegment .segment p {
+  margin: 10px;
+}
 .collapseSegment .icon {
   margin: 0 5px;
   width: 24px;
@@ -283,11 +313,9 @@ main input {
 
 .topBar {
   height: 70px;
-  display: flex;
 }
 .topBar .playerWrapper {
   width: 50%;
-  display: flex;
   align-items: center;
 }
 .topBar .playerWrapper .playerToken {
@@ -295,7 +323,6 @@ main input {
   height: 70px;
   width: 70px;
   position: fixed;
-  display: flex;
   justify-content: center;
   align-items: center;
 }
@@ -324,6 +351,7 @@ main input {
 }
 .topBar .playerWrapper .playerInfo {
   margin: 0 10px;
+  max-width: 200px;
 }
 .topBar .playerWrapper .playerInfo p {
   margin: 10px;
@@ -345,7 +373,6 @@ main input {
 }
 
 .canvasWrapper {
-  display: flex;
   justify-content: center;
 }
 
@@ -385,9 +412,6 @@ canvas {
 
 .winnerWrapper {
   justify-content: center;
-}
-.winnerWrapper .winner {
-  display: flex;
 }
 .winnerWrapper .winner p {
   margin: 10px auto;

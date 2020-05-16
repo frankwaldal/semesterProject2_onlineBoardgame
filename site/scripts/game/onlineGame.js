@@ -1,5 +1,9 @@
 let socket = io();
 let player;
+let inLobby = false;
+let messages = [];
+let chatAlert;
+let nick = '';
 let sessionID = '';
 let socketID = '';
 
@@ -65,12 +69,13 @@ if (window.location.search.substring(1) === 'online') {
     document.querySelector('body').innerHTML += `<div id="chat" class="hidden">
         <div id="messages">
         </div>
-        <div class="sendBox">
+        <div class="sendBox flex">
             <textarea id="messageBox" onkeydown="if (event.keyCode === 13){event.preventDefault(); document.querySelector('#sendMessage').click();}"></textarea>
             <button id="sendMessage" onClick="sendMessage();">Send</button>
         </div>
     </div>
     <button id="chatToggle" onClick="toggleChat();">Chat</button>`;
+    messages = JSON.parse(localStorage.getItem('chatLog'));
     player = JSON.parse(localStorage.getItem('player'));
     if (player.nr === 1) {
         playerOne = {...playerOne, ...player};
@@ -86,7 +91,7 @@ if (window.location.search.substring(1) === 'online') {
             <div id="playerTwoInfo" class="playerInfo">
             </div>
             <img src="assets/svg/player2.svg" alt="Player 2 Token" class="token" id="p2Token">
-            <div id="playerTwoToken" class="playerToken">
+            <div id="playerTwoToken" class="playerToken flex">
             </div>`;
     } else {
         playerTwo = {...playerTwo, ...player};
@@ -94,7 +99,7 @@ if (window.location.search.substring(1) === 'online') {
         socketID = playerTwo.socketID;
         nick = playerTwo.nick;
         socket.emit('joinRoom', playerTwo.sessionID);
-        document.querySelector('#playerOneWrapper').innerHTML = `<div id="playerOneToken" class="playerToken">
+        document.querySelector('#playerOneWrapper').innerHTML = `<div id="playerOneToken" class="playerToken flex">
             </div>
             <img src="assets/svg/player1.svg" alt="Player 1 Token" class="token" id="p1Token">
             <div id="playerOneInfo" class="playerInfo">
@@ -102,5 +107,11 @@ if (window.location.search.substring(1) === 'online') {
             <div class="diceWrapper" id="p1DiceWrapper">
                 <img src="assets/svg/p1Dice1.svg" alt="Player 1 Dice" class="dice">
             </div>`;
+    }
+}
+
+const loadChat = () => {
+    if (window.location.search.substring(1) === 'online') {
+        pushMessages();
     }
 }

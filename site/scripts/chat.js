@@ -98,8 +98,8 @@ const pushMessages = () => {
         if (message.login) {
             return `<p class="joinChat">${message.nick} joined the chat.`;
         } else {
-            return `<div class="${message.nick === nick ? 'messageRightPush' : 'message'}">
-                <div class="headingMessage">
+            return `<div class="${message.nick === nick ? 'messageRightPush' : 'message'} flex column">
+                <div class="headingMessage flex">
                     <p>${message.nick}</p><p>${message.time}</p>
                 </div>
                 <p class="content">${message.content}</p>
