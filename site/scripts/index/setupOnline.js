@@ -31,7 +31,9 @@ socket.on('charCheck', data => {
                 window.location.href = 'game.html?online';
             }
         } else {
-            startOnlineGame();
+            setTimeout(() => {
+                startOnlineGame();
+            }, 500);
         }
     }
 });
