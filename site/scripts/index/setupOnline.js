@@ -28,12 +28,12 @@ socket.on('charCheck', data => {
                 window.scrollTo({top: 0, behavior: 'smooth'});
             } else {
                 socket.emit('startGame', sessionID);
-                window.location.href = 'game.html?online';
+                setTimeout(() => {
+                    window.location.href = 'game.html?online';
+                }, 500);
             }
         } else {
-            setTimeout(() => {
-                startOnlineGame();
-            }, 500);
+            startOnlineGame();
         }
     }
 });
