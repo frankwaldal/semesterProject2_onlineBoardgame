@@ -8,6 +8,7 @@ let socketID = '';
 
 let winner = JSON.parse(localStorage.getItem('winner'));
 if (winner) {
+    // Checking if local or online game to decide how to populate the HTML.
     if (window.location.search.substring(1) === 'local') {
         document.querySelector('#result').innerHTML = `<h1>Congratulations!</h1>
             <div class="fullWidth flex column">
@@ -34,6 +35,7 @@ if (winner) {
         </div>
         <button id="chatToggle" onClick="toggleChat();">Chat</button>`;
         messages = JSON.parse(localStorage.getItem('chatLog'));
+        // Displays different landing screen depending on if you win or lose.
         if (winner.nick === player.nick) {
             document.querySelector('#result').innerHTML = `<h1>Congratulations!</h1>
                 <div class="fullWidth flex column">
@@ -57,6 +59,13 @@ if (winner) {
         }
     }
     localStorage.clear();
+}
+
+// Only loads chat if online game, and after the js-file for the chat functionality is loaded.
+const loadChat = () => {
+    if (window.location.search.substring(1) === 'online') {
+        pushMessages();
+    }
 }
 
 document.querySelector('#restart').addEventListener('click', () => {window.location.href = 'index.html';});

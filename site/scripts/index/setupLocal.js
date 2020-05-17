@@ -1,3 +1,4 @@
+// Fetches character data and puts out HTML for character select on local game.
 const localPlay = () => {
     fetch('assets/data/chars.json')
         .then(resolve => {
@@ -61,6 +62,7 @@ const localPlay = () => {
         .catch(err => {console.log(err)});
 }
 
+// Checks if different characters chosen and start a local game.
 const startLocalGame = () => {
     let playerOne = document.querySelector('#charOne');
     let playerTwo = document.querySelector('#charTwo');

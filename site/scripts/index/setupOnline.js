@@ -8,15 +8,18 @@ let messages = [];
 let chatAlert;
 let nick = '';
 
+// socket.io listener to set your socketID when connecting to socket.io.
 socket.on('socketID', data => {
     socketID = data;
 });
+// socket.io listener to update character data when the other player changes character.
 socket.on('charUpdate', data => {
     if (data.socketID !== socketID) {
         document.querySelector(`#${data.event.id}`).innerHTML = `${data.nick} character: `;
         charPreview(data.event);
     }
 });
+// socket.io listener to check if players has chosen different characters.
 socket.on('charCheck', data => {
     if (onlinePlayer.nr !== data.nr) {
         if (onlinePlayer.nr === 1) {
@@ -32,12 +35,14 @@ socket.on('charCheck', data => {
         }
     }
 });
+// socket.io listener to start the game for player 2.
 socket.on('startGame', data => {
     if(onlinePlayer.nr === 2) {
         window.location.href = 'game.html?online';
     }
 });
 
+// Puts out login for online game.
 const onlinePlay = () => {
     document.querySelector('main').innerHTML = `<div class="fullWidth flex column">
             <p class="extraMargin">Please sign in with a username.</p>
@@ -53,6 +58,7 @@ const onlinePlay = () => {
         </div>`;
 }
 
+// Sets your player name, initates lobby chat and gives you option to join game session.
 const login = () => {
     if (textCheck.test(document.querySelector('#username').value)) {
         nick = document.querySelector('#username').value;
@@ -91,6 +97,7 @@ const login = () => {
     }
 }
 
+// Checks if game session in available (less than 2 players), and connects you to game session, changes from lobby chat to game chat.
 const gameConnect = () => {
     if (textCheck.test(sessionID = document.querySelector('#sessionID').value)) {
         sessionID = document.querySelector('#sessionID').value;
@@ -206,6 +213,7 @@ const gameConnect = () => {
     }
 }
 
+// Updates character preview and sends chosen character data to other connected player.
 const onlineCharPreview = e => {
     charPreview(e);
     let event = {
@@ -221,6 +229,7 @@ const onlineCharPreview = e => {
     socket.emit('charUpdate', data);
 }
 
+// Starts online game.
 const startOnlineGame = () => {
     let char;
     if (onlinePlayer.nr === 1) {

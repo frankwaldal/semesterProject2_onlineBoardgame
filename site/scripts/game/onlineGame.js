@@ -7,6 +7,7 @@ let nick = '';
 let sessionID = '';
 let socketID = '';
 
+// socket.io listener for initiating game.
 socket.on('getPlayerInfo', data => {
     if (data.nr !== player.nr) {
         if (data.nr === 1) {
@@ -21,6 +22,7 @@ socket.on('getPlayerInfo', data => {
         }
     }
 });
+// socket.io listener for rolling dice.
 socket.on('roll', data => {
     if (player.nr !== data.nr) {
         rolling = setInterval(() => {
@@ -28,6 +30,7 @@ socket.on('roll', data => {
         }, 100);
     }
 });
+// socket.io listener for rolling to decide starter.
 socket.on('decideRolled', data => {
     if (player.nr !== data.nr) {
         clearInterval(rolling);
@@ -38,12 +41,14 @@ socket.on('decideRolled', data => {
         }
     }
 });
+// socket.io listener to retrive tiles data from player 1.
 socket.on('tilesData', data => {
     if (player.nr === 2) {
         tiles = data.tiles;
         finishInitBoard(data.coords);
     }
 });
+// socket.io listener for roll result.
 socket.on('moveRolled', data => {
     if (player.nr !== data.nr) {
         clearInterval(rolling);
@@ -51,6 +56,7 @@ socket.on('moveRolled', data => {
         playerMoveRolled(data.nr, data.roll);
     }
 });
+// socket.io listener for rolling dice.
 socket.on('battleRoll', data => {
     if (data.nr !== player.nr) {
         rolling = setInterval(() => {
@@ -58,6 +64,7 @@ socket.on('battleRoll', data => {
         }, 100);
     }
 });
+// socket.io listener for roll result.
 socket.on('battleRolled', data => {
     if (data.player.nr !== player.nr) {
         clearInterval(rolling);
@@ -65,6 +72,7 @@ socket.on('battleRolled', data => {
     }
 });
 
+// Initate the game for online play.
 if (window.location.search.substring(1) === 'online') {
     document.querySelector('body').innerHTML += `<div id="chat" class="hidden">
         <div id="messages">
@@ -110,6 +118,7 @@ if (window.location.search.substring(1) === 'online') {
     }
 }
 
+// Loads chat when in online game.
 const loadChat = () => {
     if (window.location.search.substring(1) === 'online') {
         pushMessages();

@@ -1,5 +1,6 @@
 let chars = [];
 
+// Expands info segments on front page.
 const expandInfo = e => {
     if (e.target.tagName === 'H2') {
         let id = e.target.id.slice(0,-7);
@@ -30,6 +31,7 @@ const expandInfo = e => {
     }
 }
 
+// Previews chosen character in selection screen.
 const charPreview = e => {
     document.querySelector(`#${e.id}Selected`).innerHTML = `<h2>${chars[e.value].name}</h2>
         <img src="${chars[e.value].imgUrl}" alt="${chars[e.value].name}">

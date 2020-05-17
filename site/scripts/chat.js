@@ -1,3 +1,4 @@
+// socket.io listener for player joining a chat.
 socket.on('joinChat', data => {
     let message = {
         nick: data,
@@ -6,6 +7,7 @@ socket.on('joinChat', data => {
     messages.push(message);
     pushMessages();
 });
+// socket.io listener for a message retrieved in lobby chat.
 socket.on('lobbyChat', data => {
     if (inLobby) {
         messages.push(data);
@@ -32,6 +34,7 @@ socket.on('lobbyChat', data => {
         }
     }
 });
+// socket.io listener for a mesage retrieved in game chat.
 socket.on('gameChat', data => {
     if (data.sessionID === sessionID) {
         messages.push(data);
@@ -59,6 +62,7 @@ socket.on('gameChat', data => {
     }
 });
 
+// Opens and closes chat window.
 const toggleChat = () => {
     if (chatAlert !== undefined) {
         clearTimeout(chatAlert);
@@ -71,6 +75,7 @@ const toggleChat = () => {
     }
 }
 
+// Sends a message, function checks if you're in lobby chat or game chat.
 const sendMessage = () => {
     let now = new Date();
     let time = `${now.toLocaleDateString()} - ${now.toLocaleTimeString()}`;
@@ -93,6 +98,7 @@ const sendMessage = () => {
     document.querySelector('#messageBox').value = '';
 }
 
+// Writes out messages in HTML to the chat window.
 const pushMessages = () => {
     let chatHTML = messages.map(message => {
         if (message.login) {
